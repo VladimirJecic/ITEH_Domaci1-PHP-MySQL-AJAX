@@ -131,10 +131,6 @@ svg {
     color: #6b6f75;
 
 }
-#myNavbar.collapse.navbar-collapse{
-    display:flex;
-    height: 50px !important;
-} 
 
 @media only screen and  (max-width: 880px) {
     .col-sm-4.benefits {
