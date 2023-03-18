@@ -1,8 +1,12 @@
 <?php
 include "Database.php";
 $mydb = new Database('heliotrope');
-if (isset($_POST['submit']))
+if (isset($_POST['parfem-post']))
 {
+    //operacija ce se sastojati iz 2 inserta,prvo se pamti slika
+    //zatim sa id-em slike, koji cu nekako dobiti nazad od baze
+    //pravim drugi insert gde cu ubaciti ostale podatke o parfemu
+    //i zapamtiti ga
     if(getimagesize($_FILES['image']['tmp_name'])==FALSE){
         echo "Please select an image.";
     }
@@ -11,7 +15,13 @@ if (isset($_POST['submit']))
         $name = addslashes($_FILES['image']['name']);
         $image= file_get_contents($image);
         $image = base64_encode($_image);
-        $mydb->saveImage($image);
+        // $q="INSERT INTO IMAGES(image,name) values ('$image','$image')";
+        if($mydb->insert(table:'perfume_image',column_names:array('image','name'),column_values:array("'".$image."'","'".$name."'"))){
+            echo "<br/>Image uploaded.";
+        } else{
+            echo "<br/>Image uploaded.";
+        }
+       echo "<br/>New record inserted succcessfully with id=".$mydb->last_id;
     }
 }
 

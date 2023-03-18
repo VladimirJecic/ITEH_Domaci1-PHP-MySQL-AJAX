@@ -10,6 +10,7 @@ class Database
     public $result;//, mysqli_result objekat , pamte se informacije iz baze
     public $records;//ukupan broj redova koji su vraceni iz baze kroz rezultate
     public $affected;//broj svih izmenjenih redova nakon izvrsenja upita
+    public $last_id;//poslednji id generisan sa auto-inkrementom
 
     function __construct($par_dbname)
     {
@@ -41,21 +42,9 @@ class Database
             if(isset($this->result->affected_rows)){
                 $this->affected = $this->result->affected_rows;
             }
-            return true;
-        }else{
-            return false;
-        }
-    }
-    function saveImage($image){
-        //operacija ce se sastojati iz 2 inserta,prvo se pamti slika
-        //zatim sa id-em slike, koji cu nekako dobiti nazad od baze
-        //pravim drugi insert gde cu ubaciti ostale podatke o parfemu
-        //i zapamtiti ga
-        $q="INSERT INTO IMAGES(image) values ('$image')";
-        //execute query inace treba da bude privatna u Database.php
-        //za sada ce samo ostati public
-        echo($q);
-        if($this->ExecuteQuery($q)){
+            if(isset($this->result->insert_id)){
+                $this->last_id = $this->result->insert_id;
+            }
             return true;
         }else{
             return false;
@@ -81,8 +70,9 @@ class Database
         $this->ExecuteQuery($query);
 
     }
-    function insert($table="novost",$column_names= array('naslov','tekst','datumvreme','kategorija_id'),$column_values=null ){
+    function insert($table="perfume",$column_names= array('name','gender','brand_id','tester','quantity','price','image_id'),$column_values=null ){
         //INSERT INTO NOVOST(...) VALUES(...)
+        
         if($column_names!=null && $column_values!=null){
             $q = 'INSERT INTO '.$table.'('.implode(',',$column_names).') VALUES('.implode(',',$column_values).')';
             echo($q);

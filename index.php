@@ -139,7 +139,7 @@ include 'obrada.php';
 
 </html>
 
-<!-- <script>
+<script>
 
     // kreiramo niz blokova, odnosno niz svih id vrednosti div sekcija
     var nizBlokova = ["get_odgovor", "novosti_post", "kategorije_post", "brisanje_reda", "kategorije_put",
@@ -415,4 +415,4 @@ include 'obrada.php';
                 }
             }
         }
-</script> -->
+</script>
