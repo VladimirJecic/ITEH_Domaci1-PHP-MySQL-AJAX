@@ -1,0 +1,6 @@
+RewriteEngine On
+
+ <FilesMatch "\.(jpg|jpeg|png|gif|swf)$">
+    Header set Cache-Control "max-age= 86401, public"
+</FilesMatch>
+ErrorDocument 404 /iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/errors/404_error.php
