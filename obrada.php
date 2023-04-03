@@ -7,19 +7,19 @@ if (isset($_POST['parfem-post']))
     //zatim sa id-em slike, koji cu nekako dobiti nazad od baze
     //pravim drugi insert gde cu ubaciti ostale podatke o parfemu
     //i zapamtiti ga
-    if(getimagesize($_FILES['image']['tmp_name'])==FALSE){
+    if(getimagesize($_FILES['upload-image']['tmp_name'])==FALSE){
         echo "Please select an image.";
     }
     else{
-        $image = addslashes($_FILES['image']['tmp_name']);
-        $name = addslashes($_FILES['image']['name']);
+        $image = addslashes($_FILES['upload-image']['tmp_name']);
+        $name = addslashes($_FILES['upload-image']['name']);
         $image= file_get_contents($image);
-        $image = base64_encode($_image);
+        $image = base64_encode($image);
         // $q="INSERT INTO IMAGES(image,name) values ('$image','$image')";
         if($mydb->insert(table:'perfume_image',column_names:array('image','name'),column_values:array("'".$image."'","'".$name."'"))){
             echo "<br/>Image uploaded.";
         } else{
-            echo "<br/>Image uploaded.";
+            echo "<br/>Error occured image wasn't uploaded.";
         }
        echo "<br/>New record inserted succcessfully with id=".$mydb->last_id;
     }

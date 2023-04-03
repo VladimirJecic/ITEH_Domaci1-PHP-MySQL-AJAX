@@ -35,15 +35,15 @@ class Database
         if($this->result){
             //ako je query koji smo radili vratio broj redova >0, kod upita sa SELECT
             //pritom num_rows je property objecta mysqli_result
-            if(isset($this->result->num_rows)){
-                $this->records = $this->result->num_rows;
-            }
+           // if(isset($this->result->num_rows)){
+              //  $this->records = $this->result->num_rows;
+           // }
             //u slucaju UPDATE,INSERT,DELETE dobicemo broj izmenjenih redova
-            if(isset($this->result->affected_rows)){
-                $this->affected = $this->result->affected_rows;
+            if(isset($this->dblink->affected_rows)){
+                $this->affected = $this->dblink->affected_rows;
             }
-            if(isset($this->result->insert_id)){
-                $this->last_id = $this->result->insert_id;
+            if(isset($this->dblink->insert_id)){
+                $this->last_id = $this->dblink->insert_id;
             }
             return true;
         }else{

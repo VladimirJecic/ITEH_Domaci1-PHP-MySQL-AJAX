@@ -6,48 +6,23 @@
   <title>Heliotrope Perfumes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-control" content="public">
+
   <link rel="stylesheet" href="bootstrap/bootstrap-3.4.1-dist/css/bootstrap.min.css">
   <script src="jquery/jquery.min.js"></script>
   <script src="bootstrap/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+  
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    /* Remove the navbar's default rounded borders and increase the bottom margin */
-    .navbar {
-      margin-bottom: 50px;
-      border-radius: 0;
-    }
-
-    /* Remove the jumbotron's default bottom margin */
-    .jumbotron {
-      margin-bottom: 0;
-    }
-
-    /* Add a gray background color and some padding to the footer */
-    footer {
-      background-color: #f2f2f2;
-      padding: 25px;
-    }
-
-    /* Note: Try to remove the following lines to see the effect of CSS positioning */
-    .affix {
-      top: 0;
-      width: 100%;
-      z-index: 1;
-    }
-
-    .affix+.container-fluid {
-      padding-top: 70px;
-    }
-  </style>
 
 </head>
 <?php
+// phpinfo();
+// echo $_SERVER['DOCUMENT_ROOT'];
 if (!isset($_SESSION)) {
   session_start();
 }
-ini_set('mysql.connect_timeout', 300);
-ini_set('default.connect_timeout', 300);
-include 'obrada.php';
+// ini_set('mysql.connect_timeout', 300);
+// ini_set('default.connect_timeout', 300);
+//include 'obrada.php';
 ?>
 
 <body>
@@ -84,66 +59,70 @@ include 'obrada.php';
   <div class="row" style="background-color: #e6a3fa">
     <div class="col-sm-2"><img id="logo-small" class="img-responsive" src="img/logo1.png" alt="logo.png"></div>
     <div id="input" class="col-sm-5">
-      <input type="text" name="search-input" id="search-input" placeholder="Pretraga po imenu">
+      <input type="text" name="search-name" id="search-name" placeholder="Pretraga po imenu">
       <!-- NE-zaboraviti labele,NIKADA,inace input poblesavi i duzina skroz poremeti layout -->
       <div>
-        <input type="radio" name="gender1" id="male1" value="male">
+        <input type="radio" name="gender1" id="male1" value="M">
         <label for="male1">Muški</label>
-        <input type="radio" name="gender1" id="female1" value="female">
+        <input type="radio" name="gender1" id="female1" value="F">
         <label for="female1">Ženski</label>
       </div>
       <container id="brend_sort_odabir">
         <abbr>Brend:</abbr>
         <select name="brend_odabir" title="brend_odabir" id="brend_odabir1">
+          <option value="0">--Svi--</option>
           <option value="1">B1</option>
           <option value="2">B2</option>
           <option value="3">B3</option>
           <option value="4">B4</option>
         </select>
         <select name="sort_odabir" title="brend_odabir" id="sort_odabir">
-          <option value="1">Cene->rastuće</option>
-          <option value="2">Cene->opadajuće</option>
-          <option value="3">Imena->rastuća(A-Z)</option>
-          <option value="4">Imena->opadajuća(Z-A)</option>
+          <option value="perfume.price asc">Cene->rastuće</option>
+          <option value="perfume.price desc">Cene->opadajuće</option>
+          <option value="perfume.name asc">Imena->rastuća(A-Z)</option>
+          <option value="perfume.name desc">Imena->opadajuća(Z-A)</option>
         </select>
       </container>
-      <div id="tester">
+      <div id="tester1">
         <abbr>Tester:</abbr>
-        <input type="radio" name="tester" id="yes1" value="yes">
+        <input type="radio" name="tester1" id="yes1" value="yes">
         <label for="yes1">Da</label>
-        <input type="radio" name="tester" id="no1" value="no">
+        <input type="radio" name="tester1" id="no1" value="no">
         <label for="no1">Ne</label>
       </div>
-      <container id="quantity">
+      <!-- <container id="quantity">
         <abbr>Količina:</abbr>
         <select name="quantity_odabir" title="quantity_odabir" id="quantity_odabir">
-          <?php
+          < ? php
           $quantities = range(1, 10);
           foreach ($quantities as $q): ?>
-            <option value="<?php echo $q ?>"> <?php echo $q ?> </option>
-          <?php endforeach; ?>
+            <option value="< ? php  echo $q ?>"> < ?php echo $q ?> </option>
+          < ? php endforeach; ?>
         </select>
-      </container>
+      </container> -->
 
 
 
     </div>
-    <div id="submit" class="col-sm-1"><button type="submit" title="search-submit"><span
+    <div id="div-search" class="col-sm-1"><button type="submit" name="search-submit" title="search-submit"><span
           class="glyphicon glyphicon-search"></button></div>
     <div id="benefits" class="col-sm-4">
-      <row> <span class="glyphicon glyphicon-shopping-ok"></span>
-        <h3>h3 heading <small>secondary text</small></h3>
-      </row>
-      <row> <span class="glyphicon glyphicon-shopping-ok"></span>
-        <h3>h3 heading <small>secondary text</small></h3>
-      </row>
-      <row> <span class="glyphicon glyphicon-shopping-ok"></span>
-        <h3>h3 heading <small>secondary text</small></h3>
-      </row>
+      <div class="row">
+        <span class="glyphicon glyphicon-ok"></span>
+        <h2>100% Original</h2>
+      </div>
+      <div class="row">
+        <span class="glyphicon glyphicon-ok"></span>
+        <h2>Safe Purchase</h2>
+      </div>
+      <div class="row">
+        <span class="glyphicon glyphicon-ok"></span>
+        <h2>Free Shipment</h2>
+      </div>
     </div>
   </div>
 
-  <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="298.65">
+  <nav class="navbar navbar-inverse sticky"> <!-- 298.65 -->
     <div class="container-fluid">
       <div class="navbar-header" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
@@ -153,10 +132,10 @@ include 'obrada.php';
       </div>
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav" name="zahtev_header" id="zahtev_header">
-          <li class="perfume-get active"><a href="#">Home</a></li>
-          <li><a class="perfume-post" href="#">Unos Novog Parfema</a></li>
-          <li><a class="perfume-put" href="#">Izmena Parfema</a></li>
-          <li><a class="perfume-delete" href="#">Brisanje Parfema</a></li>
+          <li class="active"><a class="perfume-get" href="#perfume-get">Parfemi</a></li>
+          <li><a class="perfume-post" href="#perfume-post">Unos Novog Parfema</a></li>
+          <li><a class="perfume-put" href="#perfume-put">Izmena Parfema</a></li>
+          <li><a class="perfume-delete" href="#perfume-delete">Brisanje Parfema</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
@@ -172,7 +151,7 @@ include 'obrada.php';
                 <li><a href="#">CSS</a></li>
                 <li><a href="#">JavaScript</a></li>
                 <li class="divider"></li>
-                <li><a href="#">About Us</a></li>
+                <li><a href="korpa.php">Vidi Korpu</a></li>
               </ul>
             </div>
           </li>
@@ -180,20 +159,82 @@ include 'obrada.php';
       </div>
     </div>
   </nav>
-  <div class="container" id="perfume-error"></div>
-  <div class="container" id="perfume-get"></div>
+  <pre class="container" id="error" style="color:#ff3333"></pre>
+  <pre class="container" id="success" style="color:#33cc33"></pre>
+  <div class="container" id="perfume-get" style="display: block;">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="card">
+          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
+          <h1><small>Bootstrap brand</small></h1>
+          <h3><i>-Tailored Jeans-</i></h3>
+          <p class="price"><b>$19.99</b></p>
+          <p><button>Dodaj u korpu</button></p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <img src="img/acqua_di_parma-magnolia_nobile-100ml.png" class="img-responsive" style="max-width:25 vw;"
+            alt="Image">
+          <h1><small>Bootstrap brand</small></h1>
+          <h3><i>-Tailored Jeans-</i></h3>
+          <p class="price"><b>$19.99</b></p>
+          <p><button>Dodaj u korpu</button></p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
+          <h1><small>Bootstrap brand</small></h1>
+          <h3><i>-Tailored Jeans-</i></h3>
+          <p class="price"><b>$19.99</b></p>
+          <p><button>Dodaj u korpu</button></p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
+          <h1><small>Bootstrap brand</small></h1>
+          <h3><i>-Tailored Jeans-</i></h3>
+          <p class="price"><b>$19.99</b></p>
+          <p><button>Dodaj u korpu</button></p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
+          <h1><small>Bootstrap brand</small></h1>
+          <h3><i>-Tailored Jeans-</i></h3>
+          <p class="price"><b>$19.99</b></p>
+          <p><button>Dodaj u korpu</button></p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
+          <h1><small>Bootstrap brand</small></h1>
+          <h3><i>-Tailored Jeans-</i></h3>
+          <p class="price"><b>$19.99</b></p>
+          <p><button>Dodaj u korpu</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <form action="." method="post" enctype="multipart/form-data"> -->
   <div class="container" id="perfume-post">
-    <!-- ovde napraviti skeleton, zatim u js dodati akciju na klik na dugme -->
+    <!-- ovde napraviti skeleton, zatim u  js dodati akciju na klik na dugme -->
+    <form id="image_upload_form" method="post" enctype="multipart/form-data">
     <div class="row">
       <div class="col-sm-1"></div>
       <div class="col-sm-5">
         <div class="row">
           <div class="panel panel-primary" style="height:35%">
-            <div class="panel-body">
-              <div id="preview"></div><img src="https://placehold.it/150x80?text=IMAGE"
-                style="height:160px; width:300px;" class="img-responsive" style="width:100%" alt="Image">
+            <div id="preview" class="panel-body">
+              <img src="img/150x80.png" style="height:160px; width:300px;" class="img-responsive" style="width:100%"
+                alt="Image">
             </div>
-            <div class="panel-footer"><input type="file" class="btn btn-info" value="Izaberi Sliku" style="width:100%">
+            <div class="panel-footer"><input type="file" id="upload-image" name="upload-image" class="btn btn-info"  accept="image/*"
+                value="Izaberi Sliku" style="width:100%">
             </div>
           </div>
         </div>
@@ -213,10 +254,10 @@ include 'obrada.php';
           </div>
           <div class="col-sm-6">
             <label for="male2">Muški</label>
-            <input type="radio" name="gender2" id="male2" value="male">
+            <input type="radio" name="gender2" id="male2" value="M">
             &nbsp &nbsp
             <label for="female2">Ženski</label>
-            <input type="radio" name="gender2" id="female2" value="female">
+            <input type="radio" name="gender2" id="female2" value="F">
           </div>
         </div>
         <div class="row">
@@ -233,178 +274,43 @@ include 'obrada.php';
         <div class="row">
           <div class="col-sm-2"><abbr>Tester:</abbr></div>
           <div class="col-sm-6">
-            <input type="radio" title="tester" name="tester" id="yes2" value="yes">
+            <input type="radio" name="tester2" id="yes2" value="yes">
             <label for="ye2s">Da</label>
             &nbsp &nbsp
-            <input type="radio" title="tester" name="tester" id="no2" value="no">
+            <input type="radio" name="tester2" id="no2" value="no">
             <label for="no2">Ne</label>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-2">
-            <label for="price">Cena:</label>
+            <label for="perfume-price">Cena:</label>
           </div>
           <div class="col-sm-6">
-            <input type="text" name="price" id="price" placeholder="U evrima...">
+            <input type="text" name="perfume-price" id="perfume-price" placeholder="U evrima...">
           </div>
         </div>
         <div class="row" id="parfem-post">
-          <input type="submit" name="parfem-post" id="parfem-post" class="btn btn-info" value="Sačuvaj parfem">
+          <input type="submit" name="parfem-post" id="parfem-post" class="btn btn-info" value="Sačuvaj parfem"
+            style="margin-left: 10px">
         </div>
       </div>
       <div class="col-sm-1"></div>
     </div>
+    </form>
   </div>
   <div class="container" id="perfume-put"></div>
   <div class="container" id="perfume-delete"></div>
+  <!-- </form> -->
   <br>
   <br>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-    </div>
-  </div><br><br>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-    </div>
-  </div><br><br>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">BLACK FRIDAY DEAL</div>
-          <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-              style="width:100%" alt="Image"></div>
-          <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-        </div>
-      </div>
-    </div>
-  </div><br><br>
-
   <footer class="container-fluid text-center">
-    <p>Online Store Copyright</p>
-    <form class="form-inline">Get deals:
-      <input type="email" class="form-control" size="50" placeholder="Email Address">
-      <button type="button" class="btn btn-danger">Sign Up</button>
+    <p>@2023 Heliotrope, Sva prava zadržana</p>
+    <form class="form-inline">Prijava za newsletter:
+      <input type="email" class="form-control" size="50" placeholder="Email Addresa">
+      <button type="button" class="btn btn-danger">Prijavi se</button>
     </form>
   </footer>
-
+  <script src="js/mojskript.js" type="text/javascript"></script>
 </body>
 
 </html>
-
-<script type="text/javascript">
-
-  // kreiramo niz blokova, odnosno niz svih id vrednosti div sekcija
-  const nizBlokova = ["perfume-error", "perfume-get", "perfume-post", "perfume-put", "perfume-delete"];
-
-
-  //na samom početku želimo da sakrijemo sve blokove, dok korisnik ne odabere tip tabele i HTTP zahteva
-  function skloniBlokove() {
-    //prolazimo kroz niz blokova
-    for (const blok of nizBlokova) {
-      //i vrednost display atributa u okviru css-a postavljamo na none, kako se ne bi prikazivali
-      document.getElementById(blok).style.display = "none";
-    }
-    //osim ako ne postoji neki tekst u get_odgovor
-    // if (document.getElementById("get_odgovor").innerHTML != "" && $("input[name=odabir_tabele]:checked").length == 0) {
-    //     document.getElementById("get_odgovor").style.display = "block";
-    // }
-    // if (document.getElementById("server_message").innerHTML != "") {
-    //     alert(document.getElementById("server_message").innerHTML);
-    //     document.getElementById("server_message").innerHTML = "";
-    // };
-
-  }
-  //pozivamo funkciju da se izvrši
-  skloniBlokove();
-
-  // Add active class to the current button (highlight it)
-  var header = document.getElementById("zahtev_header");
-  var lis = header.querySelectorAll("li");
-  for (var i = 0; i < lis.length; i++) {
-    lis[i].addEventListener("click", function () {
-      var current = document.getElementsByClassName("active");
-      current[0].className = current[0].className.replace(" active", "");
-      this.className += " active";
-    });
-  }
-
-      //EventHandlers
-      $("input[name=zahtev_header]").on("click", prikaziBlok);
-
-      function prikaziBlok() {
-        var current = document.getElementsByClassName("active");
-        //moze se posle perfume-post mozda zameniti sa nizBlokova[1]
-        if(current instanceof perfume-post){
-          skloniBlokove();
-          document.querySelectorAll("container.perfume-post").style.display = "block";
-        }
-      }
-
-
-</script>
