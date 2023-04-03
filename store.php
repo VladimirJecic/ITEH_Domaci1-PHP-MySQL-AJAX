@@ -96,7 +96,7 @@ if (!isset($_SESSION)) {
           < ? php
           $quantities = range(1, 10);
           foreach ($quantities as $q): ?>
-            <option value="< ? php  echo $q ?>"> < ?php echo $q ?> </option>
+            <option value= "< ? php  echo $q ?>"> < ?php echo $q ?> </option>
           < ? php endforeach; ?>
         </select>
       </container> -->
