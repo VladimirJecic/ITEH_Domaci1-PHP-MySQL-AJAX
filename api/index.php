@@ -11,12 +11,13 @@ Flight::route('/', function(){
     echo 'hello world!';
 });
 // Flight::route('GET /parfemi/search/@q', function($q){
-Flight::route('GET /parfemi/@q', function($q){
+Flight::route('GET /parfemi/\?where=@where?&order=@order?', function($where,$order){
 	header ("Content-Type: application/json; charset=utf-8");
+    $where = rawurldecode(base64_decode($where));
 	$db = Flight::db();
     try{
-        $q = explode("&", $q);
-        $db->select(join_table1: "brand",join_table2: "image", where: $q[0],order: $q[1]);
+        // $q = explode("&", $q);
+        $db->select(join_table1: "brand",join_table2: "image", where: $where,order: $order);
         $niz=array();
         while ($red=$db->result->fetch_object()){
             $niz[] = $red;
