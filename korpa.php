@@ -13,38 +13,43 @@
 
     <link rel="stylesheet" href="css/style.css">
     <style>
-        div.container-fluid.korpa{
+        div.container-fluid.korpa {
             min-height: 77.6vh;
         }
+
         table {
             border-collapse: collapse;
         }
 
-        td:not(tfoot td)
-        {
+        td:not(tfoot td) {
             border: 1px solid black;
         }
-        table.table.table-striped.table-responsive tfoot tr td{
-            vertical-align: middle ;
+
+        table.table.table-striped.table-responsive tfoot tr td {
+            vertical-align: middle;
         }
 
         table.table.table-striped.table-responsive tr td {
             width: 1%;
             white-space: nowrap;
         }
-        button.btn.btn-izbaci{
-            background-color:  #dda9bd;
-            width:100%;
+
+        button.btn.btn-izbaci {
+            background-color: #dda9bd;
+            width: 100%;
         }
-        button.btn.btn-secondary{
-            width:100%; 
+
+        button.btn.btn-secondary {
+            width: 100%;
         }
-        a.btn.btn-success{
+
+        a.btn.btn-success {
             font-size: 1.35vw;
             max-width: 25vw;
         }
-        a#zavrsi-kupovinu.btn.btn-success{
-          width: 100%;
+
+        a#zavrsi-kupovinu.btn.btn-success {
+            width: 100%;
         }
     </style>
 
@@ -85,11 +90,11 @@
 
     </div>
     <div class="container-fluid korpa">
-    <h4>Korpa sadrži: proizvoda</h4>
-    <div class="korpa-div">
-    </div>
+        <h4>Korpa sadrži: proizvoda</h4>
+        <div class="korpa-div">
+        </div>
 
-        <table class="table table-striped table-responsive" >
+        <table class="table table-striped table-responsive">
             <thead>
                 <tr>
                     <th>Naziv</th>
@@ -100,26 +105,29 @@
             </thead>
             <tfoot>
                 <form action="?" method="post">
-          
-            <tr>
-                <td colspan="2">
-                </td>
-                <td style="text-align: end"> Ukupno:</td>
-                <td style ="text-align: center"> 90.00 Euro</td>
-                <td><button type="button"  class="btn btn-secondary"><input type="submit" name="submit" value="Isprazni Korpu" style="border: none; padding: unset;"></button></td>
 
-            </tr>
-            <tr>
-                <td><a href="store.php"  class="btn btn-success"><span class="glyphicon glyphicon-arrow-left"></span> Nastavi sa Kupovinom</a></td>
-                <td colspan="3">
-                </td>
-                <td><a type="button" href="?" id="zavrsi-kupovinu" class="btn btn-success">Završi Kupovinu <span class="glyphicon glyphicon-arrow-right"></span></a></td>
-            </form>
-            </tr>
-            <tr>
+                    <tr>
+                        <td colspan="2">
+                        </td>
+                        <td style="text-align: end"> Ukupno:</td>
+                        <td style="text-align: center"> 90.00 Euro</td>
+                        <td><button type="button" class="btn btn-secondary"><input type="submit" name="submit"
+                                    value="Isprazni Korpu" style="border: none; padding: unset;"></button></td>
 
-            </tr>
-        </tfoot>
+                    </tr>
+                    <tr>
+                        <td><a href="store.php" class="btn btn-success"><span
+                                    class="glyphicon glyphicon-arrow-left"></span> Nastavi sa Kupovinom</a></td>
+                        <td colspan="3">
+                        </td>
+                        <td><a type="button" href="?" id="zavrsi-kupovinu" class="btn btn-success">Završi Kupovinu <span
+                                    class="glyphicon glyphicon-arrow-right"></span></a></td>
+                </form>
+                </tr>
+                <tr>
+
+                </tr>
+            </tfoot>
             <tbody>
                 <tr>
                     <td>1</td>
@@ -140,8 +148,18 @@
                     <td>Marija</td>
                     <td>Pesic</td>
                     <td>pesicmara@mail.com</td>
-                    <td><button type="button" class="btn btn-izbaci" >Izbaci</button></td>
+                    <td><button type="button" class="btn btn-izbaci">Izbaci</button></td>
                 </tr>
+                <!-- <container id="quantity">
+        <abbr>Količina:</abbr>
+        <select name="quantity_odabir" title="quantity_odabir" id="quantity_odabir">
+          < ? php
+          $quantities = range(1, 10);
+          foreach ($quantities as $q): ?>
+            <option value= "< ? php  echo $q ?>"> < ?php echo $q ?> </option>
+          < ? php endforeach; ?>
+        </select>
+      </container> -->
             </tbody>
         </table>
     </div>

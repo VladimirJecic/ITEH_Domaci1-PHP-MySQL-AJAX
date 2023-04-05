@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=en>
 
 <head>
   <meta charset="utf-8">
@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="bootstrap/bootstrap-3.4.1-dist/css/bootstrap.min.css">
   <script src="jquery/jquery.min.js"></script>
   <script src="bootstrap/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
-  
+
   <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -20,9 +20,9 @@
 if (!isset($_SESSION)) {
   session_start();
 }
-// ini_set('mysql.connect_timeout', 300);
-// ini_set('default.connect_timeout', 300);
-//include 'obrada.php';
+ini_set('mysql.connect_timeout', 300);
+ini_set('default.connect_timeout', 300);
+include 'obrada.php';
 ?>
 
 <body>
@@ -70,11 +70,9 @@ if (!isset($_SESSION)) {
       <container id="brend_sort_odabir">
         <abbr>Brend:</abbr>
         <select name="brend_odabir" title="brend_odabir" id="brend_odabir1">
-          <option value="0">--Svi--</option>
-          <option value="1">B1</option>
-          <option value="2">B2</option>
-          <option value="3">B3</option>
-          <option value="4">B4</option>
+          <?php
+          getBrendovi();
+          ?>
         </select>
         <select name="sort_odabir" title="brend_odabir" id="sort_odabir">
           <option value="perfume.price asc">Cene->rastuće</option>
@@ -90,16 +88,7 @@ if (!isset($_SESSION)) {
         <input type="radio" name="tester1" id="no1" value="no">
         <label for="no1">Ne</label>
       </div>
-      <!-- <container id="quantity">
-        <abbr>Količina:</abbr>
-        <select name="quantity_odabir" title="quantity_odabir" id="quantity_odabir">
-          < ? php
-          $quantities = range(1, 10);
-          foreach ($quantities as $q): ?>
-            <option value="< ? php  echo $q ?>"> < ?php echo $q ?> </option>
-          < ? php endforeach; ?>
-        </select>
-      </container> -->
+
 
 
 
@@ -134,8 +123,8 @@ if (!isset($_SESSION)) {
         <ul class="nav navbar-nav" name="zahtev_header" id="zahtev_header">
           <li class="active"><a class="perfume-get" href="#perfume-get">Parfemi</a></li>
           <li><a class="perfume-post" href="#perfume-post">Unos Novog Parfema</a></li>
-          <li><a class="perfume-put" href="#perfume-put">Izmena Parfema</a></li>
-          <li><a class="perfume-delete" href="#perfume-delete">Brisanje Parfema</a></li>
+          <li><a class="perfume-put"href="#perfume-put" onclick="fillPerfumePut(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);">Izmena Parfema</a></li>
+          <li><a class="perfume-delete" href="#perfume-delete" onclick="fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);">Brisanje Parfema</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
@@ -161,145 +150,87 @@ if (!isset($_SESSION)) {
   </nav>
   <pre class="container" id="error" style="color:#ff3333"></pre>
   <pre class="container" id="success" style="color:#33cc33"></pre>
-  <div class="container" id="perfume-get" style="display: block;">
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/acqua_di_parma-magnolia_nobile-100ml.png" class="img-responsive" style="max-width:25 vw;"
-            alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- <form action="." method="post" enctype="multipart/form-data"> -->
-  <div class="container" id="perfume-post">
-    <!-- ovde napraviti skeleton, zatim u  js dodati akciju na klik na dugme -->
+  <div class="container" id="perfume-get"></div>
+  <div class="container" id="perfume-post" >
     <form id="image_upload_form" method="post" enctype="multipart/form-data">
-    <div class="row">
-      <div class="col-sm-1"></div>
-      <div class="col-sm-5">
-        <div class="row">
-          <div class="panel panel-primary" style="height:35%">
-            <div id="preview" class="panel-body">
-              <img src="img/150x80.png" style="height:160px; width:300px;" class="img-responsive" style="width:100%"
-                alt="Image">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="row">
+            <div class="panel panel-primary" style="height:35%">
+              <div id="preview" class="panel-body">
+                <img src="img/150x80.png" style="height:160px; width:300px;" class="img-responsive" style="width:100%"
+                  alt="Image">
+              </div>
+              <div class="panel-footer"><input type="file" id="upload-image" name="upload-image" class="btn btn-info"
+                  accept="image/*" value="Izaberi Sliku" style="width:100%">
+              </div>
             </div>
-            <div class="panel-footer"><input type="file" id="upload-image" name="upload-image" class="btn btn-info"  accept="image/*"
-                value="Izaberi Sliku" style="width:100%">
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="perfume-name">Name:</label>
+            </div>
+            <div class="col-sm-6">
+              <input type="text" name="perfume-name" id="perfume-name" placeholder="Ime Parfema...">
             </div>
           </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <abbr>Pol:</abbr>
+            </div>
+            <div class="col-sm-6">
+              <label for="male2">Muški</label>
+              <input type="radio" name="gender2" id="male2" value="M">
+              &nbsp &nbsp
+              <label for="female2">Ženski</label>
+              <input type="radio" name="gender2" id="female2" value="F">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2"><abbr>Brend:</abbr></div>
+            <div class="col-sm-6">
+              <select name="brend_odabir" title="brend_odabir" id="brend_odabir2">
+                <option value="1">B1</option>
+                <option value="2">B2</option>
+                <option value="3">B3</option>
+                <option value="4">B4</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2"><abbr>Tester:</abbr></div>
+            <div class="col-sm-6">
+              <input type="radio" name="tester2" id="yes2" value="yes">
+              <label for="ye2s">Da</label>
+              &nbsp &nbsp
+              <input type="radio" name="tester2" id="no2" value="no">
+              <label for="no2">Ne</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="perfume-price">Cena:</label>
+            </div>
+            <div class="col-sm-6">
+              <input type="text" name="perfume-price" id="perfume-price" placeholder="U evrima...">
+            </div>
+          </div>
+          <div class="row" id="parfem-post">
+            <input type="submit" name="parfem-post" id="parfem-post" class="btn btn-info" value="Sačuvaj parfem"
+              style="margin-left: 10px">
+          </div>
         </div>
+        <div class="col-sm-1"></div>
       </div>
-      <div class="col-sm-5">
-        <div class="row">
-          <div class="col-sm-2">
-            <label for="perfume-name">Name:</label>
-          </div>
-          <div class="col-sm-6">
-            <input type="text" name="perfume-name" id="perfume-name" placeholder="Ime Parfema...">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-2">
-            <abbr>Pol:</abbr>
-          </div>
-          <div class="col-sm-6">
-            <label for="male2">Muški</label>
-            <input type="radio" name="gender2" id="male2" value="M">
-            &nbsp &nbsp
-            <label for="female2">Ženski</label>
-            <input type="radio" name="gender2" id="female2" value="F">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-2"><abbr>Brend:</abbr></div>
-          <div class="col-sm-6">
-            <select name="brend_odabir" title="brend_odabir" id="brend_odabir2">
-              <option value="1">B1</option>
-              <option value="2">B2</option>
-              <option value="3">B3</option>
-              <option value="4">B4</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-2"><abbr>Tester:</abbr></div>
-          <div class="col-sm-6">
-            <input type="radio" name="tester2" id="yes2" value="yes">
-            <label for="ye2s">Da</label>
-            &nbsp &nbsp
-            <input type="radio" name="tester2" id="no2" value="no">
-            <label for="no2">Ne</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-2">
-            <label for="perfume-price">Cena:</label>
-          </div>
-          <div class="col-sm-6">
-            <input type="text" name="perfume-price" id="perfume-price" placeholder="U evrima...">
-          </div>
-        </div>
-        <div class="row" id="parfem-post">
-          <input type="submit" name="parfem-post" id="parfem-post" class="btn btn-info" value="Sačuvaj parfem"
-            style="margin-left: 10px">
-        </div>
-      </div>
-      <div class="col-sm-1"></div>
-    </div>
     </form>
   </div>
   <div class="container" id="perfume-put"></div>
   <div class="container" id="perfume-delete"></div>
+
+
   <!-- </form> -->
   <br>
   <br>
@@ -311,6 +242,5 @@ if (!isset($_SESSION)) {
     </form>
   </footer>
   <script src="js/mojskript.js" type="text/javascript"></script>
-</body>
-
+</body>   
 </html>

@@ -86,8 +86,8 @@ class Database
         $join_key12 = "id",
         $join_key21 = "image_id",
         $join_key22 = "id",
-        $where = null,
-        $order = null
+        $where = '',
+        $order = ''
     ) {
         // SELECT * FROM perfume JOIN brand ON (perfume.brand_id=brand.id) JOIN image ON (perfume.image_id=image.id)
         // WHERE LOWER(perfume.name)  LIKE '%versace%' AND perfume.gender = 'M' AND brand.name = 'Versace' AND perfume.tester = 'no'
@@ -102,11 +102,11 @@ class Database
 
             $query .= ' JOIN ' . $join_table2 . ' ON ' . '(' . $table . '.' . $join_key21 . '=' . $join_table2 . '.' . $join_key22 . ')';
         }
-        if ($where != null) {
+        if ($where != '' && $where != "null") {
             $query .= ' WHERE ' . $where;
         }
-        if ($order != null) {
-            $query .= 'ORDER BY' . $order;
+        if ($order != '') {
+            $query .= ' ORDER BY ' . $order;
         }
        
         $this->ExecuteQuery($query);
