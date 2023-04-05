@@ -73,11 +73,6 @@ include 'obrada.php';
           <?php
           getBrendovi();
           ?>
-          <!-- <option value="0">--Svi--</option>
-          <option value="1">B1</option>
-          <option value="2">B2</option>
-          <option value="3">B3</option>
-          <option value="4">B4</option> -->
         </select>
         <select name="sort_odabir" title="brend_odabir" id="sort_odabir">
           <option value="perfume.price asc">Cene->rastuće</option>
@@ -93,16 +88,7 @@ include 'obrada.php';
         <input type="radio" name="tester1" id="no1" value="no">
         <label for="no1">Ne</label>
       </div>
-      <!-- <container id="quantity">
-        <abbr>Količina:</abbr>
-        <select name="quantity_odabir" title="quantity_odabir" id="quantity_odabir">
-          < ? php
-          $quantities = range(1, 10);
-          foreach ($quantities as $q): ?>
-            <option value= "< ? php  echo $q ?>"> < ?php echo $q ?> </option>
-          < ? php endforeach; ?>
-        </select>
-      </container> -->
+
 
 
 
@@ -137,8 +123,8 @@ include 'obrada.php';
         <ul class="nav navbar-nav" name="zahtev_header" id="zahtev_header">
           <li class="active"><a class="perfume-get" href="#perfume-get">Parfemi</a></li>
           <li><a class="perfume-post" href="#perfume-post">Unos Novog Parfema</a></li>
-          <li><a class="perfume-put" href="#perfume-put">Izmena Parfema</a></li>
-          <li><a class="perfume-delete" href="#perfume-delete">Brisanje Parfema</a></li>
+          <li><a class="perfume-put"href="#perfume-put" onclick="fillPerfumePut(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);">Izmena Parfema</a></li>
+          <li><a class="perfume-delete" href="#perfume-delete" onclick="fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);">Brisanje Parfema</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
@@ -164,68 +150,8 @@ include 'obrada.php';
   </nav>
   <pre class="container" id="error" style="color:#ff3333"></pre>
   <pre class="container" id="success" style="color:#33cc33"></pre>
-  <div class="container" id="perfume-get" style="display: block;">
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/acqua_di_parma-magnolia_nobile-100ml.png" class="img-responsive" style="max-width:25 vw;"
-            alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
-          <img src="img/versace-eros-100ml.png" class="img-responsive" style="max-width:25 vw;" alt="Image">
-          <h1><small>Bootstrap brand</small></h1>
-          <h3><i>-Tailored Jeans-</i></h3>
-          <p class="price"><b>$19.99</b></p>
-          <p><button>Dodaj u korpu</button></p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- <form action="." method="post" enctype="multipart/form-data"> -->
-  <div class="container" id="perfume-post">
-    <!-- ovde napraviti skeleton, zatim u  js dodati akciju na klik na dugme -->
+  <div class="container" id="perfume-get"></div>
+  <div class="container" id="perfume-post" >
     <form id="image_upload_form" method="post" enctype="multipart/form-data">
       <div class="row">
         <div class="col-sm-1"></div>
@@ -303,6 +229,8 @@ include 'obrada.php';
   </div>
   <div class="container" id="perfume-put"></div>
   <div class="container" id="perfume-delete"></div>
+
+
   <!-- </form> -->
   <br>
   <br>
@@ -314,6 +242,5 @@ include 'obrada.php';
     </form>
   </footer>
   <script src="js/mojskript.js" type="text/javascript"></script>
-</body>
-
+</body>   
 </html>
