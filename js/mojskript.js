@@ -160,12 +160,15 @@ function posaljiZahtev(tipZahteva) {
               switch (getType) {
                 case "perfume-get":
                   fillPerfumeGet(arrPerfume);
+                  scrollProductIntoView();
                   break;
                 case "perfume-put":
                   fillPerfumePut(arrPerfume);
+                  scrollProductIntoView();
                   break;
                 case "perfume-delete":
                   fillPerfumeDelete(arrPerfume);
+                  scrollProductIntoView();
                   break;
                 default:
                   console.log("Nepredvidjen aktivni blok" + getType);
@@ -237,19 +240,24 @@ function posaljiZahtev(tipZahteva) {
 function fillPerfumeGet(arrPerfume) {
   console.log("GET");
   document.getElementById("perfume-get").innerHTML = "";
+  var i=1;
   arrPerfume.forEach(el => {
     var div_col = document.createElement('div');
     div_col.classList.add('col-sm-4');
     div_col.innerHTML = `
-        <div class="card">
+        <div class="card"  id="product${i}">
           <img src="data:image/png;base64,${el["image"]}" class="img-responsive" alt="${el["image_name"]}">
           <h1><small>${el["brand_name"]}</small></h1>
           <h3><i>${el["name"]}</i></h3>
           <p class="price"><b>${parseFloat(el["price"]).toFixed(2)}  &#8364</b></p>
-          <p><button id="addToCart">Dodaj u korpu</button></p>
+          <form action="" method="post">
+          <input type="hidden" name="id" value=${el["id"]}>
+          <input type="submit" name="submit" value="Dodaj u korpu"></input>
+          </form>
         </div>
         `;
     document.getElementById("perfume-get").appendChild(div_col);
+    i++;
   });
 }
 function fillPerfumePut(arrPerfume) {  
@@ -286,8 +294,15 @@ function fillPerfumeDelete(arrPerfume) {
     document.getElementById("perfume-delete").appendChild(div_col);
   });
 }
+function scrollProductIntoView(){
+  var hash = window.location.hash;
+  if(hash!='')
+  $(hash)[0].scrollIntoView({ block: 'start',  behavior: 'smooth' });
+}
 //////////<POZIVI_FUNKCIJA>///////////////////
 postaviAktivniNavbar();
 posaljiZahtev("get");
 prikaziBlok();
+
+
 //////////</POZIVI_FUNKCIJA>///////////////////

@@ -1,3 +1,19 @@
+<?php
+// phpinfo();
+// echo $_SERVER['DOCUMENT_ROOT'];
+if (!isset($_SESSION)) {
+  session_start();
+}
+// unset($_SESSION['cart']);
+if (!isset($_SESSION['cart'])) {
+  $_SESSION['cart'] = array();
+
+}
+
+// ini_set('mysql.connect_timeout', 300);
+// ini_set('default.connect_timeout', 300);
+include 'obrada.php';
+?>
 <!DOCTYPE html>
 <html lang=en>
 
@@ -14,16 +30,7 @@
   <link rel="stylesheet" href="css/style.css">
 
 </head>
-<?php
-// phpinfo();
-// echo $_SERVER['DOCUMENT_ROOT'];
-if (!isset($_SESSION)) {
-  session_start();
-}
-ini_set('mysql.connect_timeout', 300);
-ini_set('default.connect_timeout', 300);
-include 'obrada.php';
-?>
+
 
 <body>
 
@@ -58,7 +65,7 @@ include 'obrada.php';
 
   <div class="row" style="background-color: #e6a3fa">
     <div class="col-sm-2"><img id="logo-small" class="img-responsive" src="img/logo1.png" alt="logo.png"></div>
-    <div id="input" class="col-sm-5">
+    <div id="search-input" class="col-sm-5">
       <input type="text" name="search-name" id="search-name" placeholder="Pretraga po imenu">
       <!-- NE-zaboraviti labele,NIKADA,inace input poblesavi i duzina skroz poremeti layout -->
       <div>
@@ -123,8 +130,8 @@ include 'obrada.php';
         <ul class="nav navbar-nav" name="zahtev_header" id="zahtev_header">
           <li class="active"><a class="perfume-get" href="#perfume-get">Parfemi</a></li>
           <li><a class="perfume-post" href="#perfume-post">Unos Novog Parfema</a></li>
-          <li><a class="perfume-put"href="#perfume-put" onclick="fillPerfumePut(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);">Izmena Parfema</a></li>
-          <li><a class="perfume-delete" href="#perfume-delete" onclick="fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);">Brisanje Parfema</a></li>
+          <li><a class="perfume-put"href="#perfume-put" onclick="<?php if(isset($_SESSION['arrperfume'])):?>fillPerfumePut(<?php  echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);<?php endif;?>">Izmena Parfema</a></li>
+          <li><a class="perfume-delete" href="#perfume-delete" onclick="<?php if(isset($_SESSION['arrperfume'])):?>fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);<?php endif;?>">Brisanje Parfema</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
@@ -132,15 +139,38 @@ include 'obrada.php';
               <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span style="font-size: 25px;" class="glyphicon glyphicon-shopping-cart">
-                  <span class="badge">0</span>
+                  <span class="badge"> <?php countKorpa()?></span>
                   <span class="caret"></span></span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="dropdown-menu">
-                <li><a href="#">HTML</a></li>
-                <li><a href="#">CSS</a></li>
-                <li><a href="#">JavaScript</a></li>
-                <li class="divider"></li>
-                <li><a href="korpa.php">Vidi Korpu</a></li>
+                <?php
+                 $L=count($_SESSION['cart']);
+                 $sum = 0;
+                 for($i=0;$i<$L;$i++):?>
+                  <li>
+                    <p><?php echo $_SESSION['cart'][$i]->name?></p>
+                    <div>
+                      <?php $sum+=$_SESSION['cart'][$i]->quantity * $_SESSION['cart'][$i]->price ?>
+                      <p><?php echo strval($_SESSION['cart'][$i]->quantity)." x"?>&nbsp;&nbsp;<p>
+                      <p><?php echo $_SESSION['cart'][$i]->price?> &#8364<p>
+                      <p style=" float:right; margin-left:auto; "> 
+                      <form action="" method="post" >
+                        <input type="hidden" name="id" value=<?php echo $_SESSION['cart'][$i]->id?>>
+                        <button type="submit" name="submit" value="Ukloni iz Korpe"><span style="font-size: 14px;" class="glyphicon glyphicon-remove"></span></button>
+                      </form></p>
+                    </div>
+                  </li>
+                  <?php if($i!=$L-1):?>
+                  <hr class="dotted" style="border-color: #f0cffa;">
+                  <?php endif;?>
+                <?php endfor?>
+                <hr class="rounded" style="border-color: #df73ff;"></hr>
+                <li>
+                  <div class="column">
+                    <p>Ukupno: <?php echo $sum?> &#8364 &nbsp;</p>
+                    <a href="?vidi_korpu">Vidi Korpu</a>
+                  <div>
+                </li>
               </ul>
             </div>
           </li>
@@ -237,7 +267,7 @@ include 'obrada.php';
   <footer class="container-fluid text-center">
     <p>@2023 Heliotrope, Sva prava zadržana</p>
     <form class="form-inline">Prijava za newsletter:
-      <input type="email" class="form-control" size="50" placeholder="Email Addresa">
+      <input type="email" class="form-control" size="50" placeholder="Email Adresa">
       <button type="button" class="btn btn-danger">Prijavi se</button>
     </form>
   </footer>
