@@ -30,7 +30,7 @@
             vertical-align: middle;
             
         }
-        div.container-fluid.korpa {
+        div.container.korpa {
             min-height: 77.6vh;
         }
 
@@ -115,8 +115,7 @@ if (!isset($_SESSION['cart'])) {
 
     </div>
     <div class="container korpa" style="width: 90vw">
-        <h4>Korpa sadrži:
-            <?php countKorpa() ?> proizvoda
+        <h4>Korpa sadrži:<span><?php countKorpa();?></span> proizvoda
         </h4>
         <div class="korpa-div">
         </div>
@@ -137,7 +136,7 @@ if (!isset($_SESSION['cart'])) {
                         <td colspan="2">
                         </td>
                         <td style="text-align: end"> Ukupno:</td>
-                        <td id="totalPrice" style="text-align: center"> 90 Euro</td>
+                        <td id="totalPrice" style="text-align: center"> 0.00 Euro</td>
                         <td><button type="button" class="btn btn-secondary"><input type="submit" name="submit"
                                     value="Isprazni Korpu" style="border: none; padding: unset;"></button></td>
 
@@ -159,21 +158,21 @@ if (!isset($_SESSION['cart'])) {
                 <?php
                 $L = count($_SESSION['cart']);
                  for($i=0;$i<$L;$i++):?>
-                <tr>
+                <tr id="row_<?php echo $_SESSION['cart'][$i]->id?>">
                     <td class="name"><?php echo $_SESSION['cart'][$i]->name?></td>
                     <td class="singlePrice"><?php echo number_format($_SESSION['cart'][$i]->price,2,'.',' ')?></td>
                     <td class="quantity">
-                    <select name="quantity_odabir" >
+                    <select id="sel_<?php echo $_SESSION['cart'][$i]->id?>" name="quantity_odabir" onchange="updateQuantity(this); window.location.reload();">
                     <?php
                     $quantities = range(1, 20);
                     foreach ($quantities as $q): ?>
-                        <option value= "${<?php  echo $q ?>}" 
+                        <option value= "<?php  echo $q ?>" 
                         <?php if($q==$_SESSION['cart'][$i]->quantity):?> selected <?php endif;?>
                         ><?php  echo $q?> </option>
                     <?php endforeach; ?>
                     </select>             
                     </td>
-                    <td class="totalSinglePrice"> <?php echo number_format($_SESSION['cart'][$i]->quantity * $_SESSION['cart'][$i]->price,2,'.',' ') ?></td>
+                    <td class="totalSinglePrice"> <?php echo number_format($_SESSION['cart'][$i]->quantity * $_SESSION['cart'][$i]->price,2,'.','') ?></td>
                     <td class="remove"><button type="button" class="btn btn-izbaci">Izbaci</button></td>
                 </tr>
             <?php endfor;?>
@@ -193,12 +192,53 @@ if (!isset($_SESSION['cart'])) {
 
 </html>
 <script>
+
  function calculateTotal(){
+    let sum = 0;
     debugger;
     for (let index = 0; index < $(".totalSinglePrice").length; index++) {
         sum+=parseFloat($(".totalSinglePrice").eq(index).html());
     }
     document.getElementById('totalPrice').innerText = `${sum.toFixed(2)} Euro`;
+ }
+ function updateQuantity(selector){
+     let p_id = selector.id.split('_');
+     p_id = p_id[1];
+     let p_quantity = selector.value;
+     let data = {"id": p_id, "quantity": p_quantity};
+    $.ajax({
+
+          // contentType: 'application/json', ovo je pogresno zato sto ne saljem json u ovom slucaju
+          //vec zelim da posaljem multi-part data koji cu uzeti kasnije iz $_POST varijable, u suprotnom $_POST
+          // je prazna i moram da koristim php://input' da bih izvukao input 
+          contentType: 'application/json',
+          url: 'http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/update-korpa-quantity',
+          type: 'PUT',
+          async: false,
+          data: JSON.stringify(data),
+          dataType: 'JSON',
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            console.log(data['message']);
+        //u slucaju da ne zelim da reloadujem i input polja
+        // jquery iteracija bi isla ovako:
+        // $("#row_"+data['id']).children().each(function(i,el){var elem = $(el[0]); console.log(elem.className);});
+        // js iteracija po DOM elementima i updejtovanje ukupne cene tog proizvoda
+        // $.each(document.getElementById("row_"+data['id']).children, function( index, element ){
+        //     if(element.getAttribute("class")=='totalSinglePrice'){ element.innerText = (data['singlePrice']*data['newQuantity']).toFixed(2) ; console.log(element)};
+        //  });
+         //updejtovanje polja konacne cene
+        //  document.getElementById("totalPrice").innerText = (parseInt(document.getElementById("totalPrice").innerText)+ (data['newQuantity']-data['oldQuantity'])*data['singlePrice']).toFixed(2);
+        //calculateTotal();
+        //ponovno brojanje proizvoda,mora preko js ili ajaxa jer je stranica vec ucitana
+          },
+          error: function (e) {
+            alert("greška prilikom azuriranja broja proizvoda u korpi:" + e);
+            
+          }
+        });
  }
  calculateTotal();
 </script>

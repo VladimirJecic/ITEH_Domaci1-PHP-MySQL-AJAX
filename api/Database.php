@@ -79,7 +79,7 @@ class Database
     }
     function select(
         $table = "perfume",
-        $columns = "*",
+        $columns = "perfume.id as id,perfume.name as name,gender,tester,quantity,price,brand_id,brand_name,image_name,image",
         $join_table1 = null,
         $join_table2 = null,
         $join_key11 = "brand_id",
@@ -144,7 +144,7 @@ class Database
         }
         return null;
     }
-    function delete($table = "novost", $where = null)
+    function delete($table = "perfume", $where = null)
     {
         if ($table != null && $where != null) {
             $q = 'DELETE FROM ' . $table . ' WHERE ' . $where;
@@ -155,7 +155,6 @@ class Database
             }
         }
         return -1;
-
     }
 
 }

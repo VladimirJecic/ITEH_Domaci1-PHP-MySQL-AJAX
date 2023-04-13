@@ -198,20 +198,14 @@
       font-size: 40px;
   }
 
-  /* .col-sm-3 p{
-   margin-bottom: 0;
-} */
-  /* #logo-small .img-responsive{
-    max-height: 85px;
-} */
   div#submit.col-sm-1,
   .col-sm-5 .col-sm-6 {
       padding-left: 0px;
   }
 
   html body div#perfume-get.container>div.col-sm-4,
-  html body div#perfume-put.container>div.col-sm-4,
-  html body div#perfume-delete.container>div.col-sm-4 {
+  html body div#perfume-put-content.container>div.col-sm-4,
+  html body div#perfume-delete-content.container>div.col-sm-4 {
       margin: 5px 0px 10px 0px;
   }
 
@@ -239,7 +233,7 @@
 
   }
 
-  div#parfem-post.row {
+  div#parfem-post.row,div#parfem-put.row {
       margin-left: 10px;
   }
 
@@ -373,7 +367,7 @@
       }
 
       @media only screen and (max-width: 651px) {
-          div#perfume-post.container+div.col-sm-5 {
+          div#perfume-post.container {
               display: flex;
               align-items: center;
               justify-content: center;

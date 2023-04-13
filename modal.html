@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="script.js"></script> -->
+    <link rel="stylesheet" href="bootstrap/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="jquery/jquery.min.js"></script>
+    <script src="bootstrap/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <!-- <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="modal-btn" class="button">Click Here</button>
+
+    <div id="my-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <div style=" display:flex; flex-direction: row;     
+                align-items:center;">
+                    <span class="glyphicon glyphicon-question-sign" style="font-size: 40px; margin-right: 10px;"></span>
+                    
+                    <h4>Do you want to go to leave this page?</h2>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p>This is my modal</p>
+                <p>This page is asking you to confirm that you want to leave -<br> information you've entered may not be saved</p>
+                <div class="row" style="display: flex; align-items: center; justify-content: flex-end;">
+                    <input type="submit" name="parfem-put" id="parfem-put" class="btn btn-info" value="Sačuvaj parfem" style="margin-left: 10px">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script>
+    // Get DOM Elements
+const modal = document.querySelector('#my-modal');
+const modalBtn = document.querySelector('#modal-btn');
+const closeBtn = document.querySelector('.close');
+const yesBtn = document.getElementById('yes');
+const noBtn = document.getElementById('no');
+
+// Events
+modalBtn.addEventListener('click', openModal);
+closeBtn.addEventListener('click', closeModal);
+yesBtn.addEventListener('click', alertYes);
+noBtn.addEventListener('click', alertNo);
+window.addEventListener('click', outsideClick);
+
+function alertYes(){
+    alert("User clicked YES!");
+}
+function alertNo(){
+    alert("User clicked NO!");
+}
+// Open
+function openModal() {
+  modal.style.display = 'block';
+}
+
+// Close
+function closeModal() {
+  modal.style.display = 'none';
+}
+
+// Close If Outside Click
+function outsideClick(e) {
+  if (e.target == modal) {
+    modal.style.display = 'none';
+  }
+}
+
+</script>
+</html>

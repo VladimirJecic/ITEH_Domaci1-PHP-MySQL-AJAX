@@ -26,9 +26,8 @@ include 'obrada.php';
   <link rel="stylesheet" href="bootstrap/bootstrap-3.4.1-dist/css/bootstrap.min.css">
   <script src="jquery/jquery.min.js"></script>
   <script src="bootstrap/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
-
   <link rel="stylesheet" href="css/style.css">
-
+  <link rel="stylesheet" href="css/modal.css">
 </head>
 
 
@@ -78,6 +77,7 @@ include 'obrada.php';
         <abbr>Brend:</abbr>
         <select name="brend_odabir" title="brend_odabir" id="brend_odabir1">
           <?php
+          echo "<option value='0'>--Svi--</option>";
           getBrendovi();
           ?>
         </select>
@@ -100,8 +100,8 @@ include 'obrada.php';
 
 
     </div>
-    <div id="div-search" class="col-sm-1"><button type="submit" name="search-submit" title="search-submit"><span
-          class="glyphicon glyphicon-search"></button></div>
+    <div id="div-search" class="col-sm-1"><button type="submit" name="search-submit" id="search-submit"
+        title="search-submit"><span class="glyphicon glyphicon-search"></button></div>
     <div id="benefits" class="col-sm-4">
       <div class="row">
         <span class="glyphicon glyphicon-ok"></span>
@@ -130,8 +130,12 @@ include 'obrada.php';
         <ul class="nav navbar-nav" name="zahtev_header" id="zahtev_header">
           <li class="active"><a class="perfume-get" href="#perfume-get">Parfemi</a></li>
           <li><a class="perfume-post" href="#perfume-post">Unos Novog Parfema</a></li>
-          <li><a class="perfume-put"href="#perfume-put" onclick="<?php if(isset($_SESSION['arrperfume'])):?>fillPerfumePut(<?php  echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);<?php endif;?>">Izmena Parfema</a></li>
-          <li><a class="perfume-delete" href="#perfume-delete" onclick="<?php if(isset($_SESSION['arrperfume'])):?>fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume']));?>);<?php endif;?>">Brisanje Parfema</a></li>
+          <li><a class="perfume-put" href="#perfume-put"
+              onclick="<?php if (isset($_SESSION['arrPerfume'])): ?>fillPerfumePut(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume'])); ?>);<?php endif; ?>">Izmena
+              Parfema</a></li>
+          <li><a class="perfume-delete" href="#perfume-delete"
+              onclick="<?php if (isset($_SESSION['arrPerfume'])): ?>fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume'])); ?>);<?php endif; ?>">Brisanje
+              Parfema</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
@@ -139,37 +143,50 @@ include 'obrada.php';
               <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span style="font-size: 25px;" class="glyphicon glyphicon-shopping-cart">
-                  <span class="badge"> <?php countKorpa()?></span>
+                  <span class="badge">
+                    <?php countKorpa() ?>
+                  </span>
                   <span class="caret"></span></span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="dropdown-menu">
                 <?php
-                 $L=count($_SESSION['cart']);
-                 $sum = 0;
-                 for($i=0;$i<$L;$i++):?>
+                $L = count($_SESSION['cart']);
+                $sum = 0;
+                for ($i = 0; $i < $L; $i++): ?>
                   <li>
-                    <p><?php echo $_SESSION['cart'][$i]->name?></p>
+                    <p>
+                      <?php echo $_SESSION['cart'][$i]->name ?>
+                    </p>
                     <div>
-                      <?php $sum+=$_SESSION['cart'][$i]->quantity * $_SESSION['cart'][$i]->price ?>
-                      <p><?php echo strval($_SESSION['cart'][$i]->quantity)." x"?>&nbsp;&nbsp;<p>
-                      <p><?php echo $_SESSION['cart'][$i]->price?> &#8364<p>
-                      <p style=" float:right; margin-left:auto; "> 
-                      <form action="" method="post" >
-                        <input type="hidden" name="id" value=<?php echo $_SESSION['cart'][$i]->id?>>
-                        <button type="submit" name="submit" value="Ukloni iz Korpe"><span style="font-size: 14px;" class="glyphicon glyphicon-remove"></span></button>
-                      </form></p>
+                      <?php $sum += $_SESSION['cart'][$i]->quantity * $_SESSION['cart'][$i]->price ?>
+                      <p>
+                        <?php echo strval($_SESSION['cart'][$i]->quantity) . " x" ?>&nbsp;&nbsp;
+                      <p>
+                      <p>
+                        <?php echo $_SESSION['cart'][$i]->price ?> &#8364
+                      <p>
+                      <p style=" float:right; margin-left:auto; ">
+                      <form action="" method="post">
+                        <input type="hidden" name="id" value=<?php echo $_SESSION['cart'][$i]->id ?>>
+                        <button type="submit" name="submit" value="Ukloni iz Korpe"><span style="font-size: 14px;"
+                            class="glyphicon glyphicon-remove"></span></button>
+                      </form>
+                      </p>
                     </div>
                   </li>
-                  <?php if($i!=$L-1):?>
-                  <hr class="dotted" style="border-color: #f0cffa;">
-                  <?php endif;?>
-                <?php endfor?>
-                <hr class="rounded" style="border-color: #df73ff;"></hr>
+                  <?php if ($i != $L - 1): ?>
+                    <hr class="dotted" style="border-color: #f0cffa;">
+                  <?php endif; ?>
+                <?php endfor ?>
+                <hr class="rounded" style="border-color: #df73ff;">
+                </hr>
                 <li>
                   <div class="column">
-                    <p>Ukupno: <?php echo $sum?> &#8364 &nbsp;</p>
+                    <p>Ukupno:
+                      <?php echo $sum ?> &#8364 &nbsp;
+                    </p>
                     <a href="?vidi_korpu">Vidi Korpu</a>
-                  <div>
+                    <div>
                 </li>
               </ul>
             </div>
@@ -181,18 +198,18 @@ include 'obrada.php';
   <pre class="container" id="error" style="color:#ff3333"></pre>
   <pre class="container" id="success" style="color:#33cc33"></pre>
   <div class="container" id="perfume-get"></div>
-  <div class="container" id="perfume-post" >
-    <form id="image_upload_form" method="post" enctype="multipart/form-data">
+  <div class="container" id="perfume-post">
+    <form id="perfume-post_form" method="post" enctype="multipart/form-data">
       <div class="row">
         <div class="col-sm-1"></div>
         <div class="col-sm-5">
           <div class="row">
             <div class="panel panel-primary" style="height:35%">
-              <div id="preview" class="panel-body">
+              <div id="preview-post" class="panel-body">
                 <img src="img/150x80.png" style="height:160px; width:300px;" class="img-responsive" style="width:100%"
                   alt="Image">
               </div>
-              <div class="panel-footer"><input type="file" id="upload-image" name="upload-image" class="btn btn-info"
+              <div class="panel-footer"><input type="file" id="upload-image-post" name="upload-image" class="btn btn-info"
                   accept="image/*" value="Izaberi Sliku" style="width:100%">
               </div>
             </div>
@@ -204,7 +221,7 @@ include 'obrada.php';
               <label for="perfume-name">Name:</label>
             </div>
             <div class="col-sm-6">
-              <input type="text" name="perfume-name" id="perfume-name" placeholder="Ime Parfema...">
+              <input type="text" name="perfume-name" id="perfume-name-post" placeholder="Ime Parfema...">
             </div>
           </div>
           <div class="row">
@@ -216,17 +233,16 @@ include 'obrada.php';
               <input type="radio" name="gender2" id="male2" value="M">
               &nbsp &nbsp
               <label for="female2">Ženski</label>
-              <input type="radio" name="gender2" id="female2" value="F">
+              <input type="radio" name="gender2" id="female2"  value="F">
             </div>
           </div>
           <div class="row">
             <div class="col-sm-2"><abbr>Brend:</abbr></div>
             <div class="col-sm-6">
               <select name="brend_odabir" title="brend_odabir" id="brend_odabir2">
-                <option value="1">B1</option>
-                <option value="2">B2</option>
-                <option value="3">B3</option>
-                <option value="4">B4</option>
+                <?php
+                getBrendovi();
+                ?>
               </select>
             </div>
           </div>
@@ -234,7 +250,7 @@ include 'obrada.php';
             <div class="col-sm-2"><abbr>Tester:</abbr></div>
             <div class="col-sm-6">
               <input type="radio" name="tester2" id="yes2" value="yes">
-              <label for="ye2s">Da</label>
+              <label for="yes2">Da</label>
               &nbsp &nbsp
               <input type="radio" name="tester2" id="no2" value="no">
               <label for="no2">Ne</label>
@@ -245,7 +261,7 @@ include 'obrada.php';
               <label for="perfume-price">Cena:</label>
             </div>
             <div class="col-sm-6">
-              <input type="text" name="perfume-price" id="perfume-price" placeholder="U evrima...">
+              <input type="text" name="perfume-price" id="perfume-price-post" placeholder="U evrima...">
             </div>
           </div>
           <div class="row" id="parfem-post">
@@ -257,11 +273,104 @@ include 'obrada.php';
       </div>
     </form>
   </div>
-  <div class="container" id="perfume-put"></div>
-  <div class="container" id="perfume-delete"></div>
+  <div id="perfume-put" class="container">
+    <div id="perfume-put-content" class="container"></div>
+    <div id="modal-put" class="container modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <div style=" display:flex; flex-direction: row;     
+                align-items:center;">
+            <span class="glyphicon glyphicon-question-sign" style="font-size: 40px; margin-right: 10px;"></span>
+            <h4>Izmena Proizvoda</h2>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form id="perfume-put_form" method="put" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="">
+            <div class="row">
+              <div class="col-sm-1"></div>
+              <div class="col-sm-5">
+                <div class="row">
+                  <div class="panel panel-primary" style="height:35%">
+                    <div id="preview-put" class="panel-body">
+                      <!-- <img src="img/150x80.png" style="height:160px; width:300px;" class="img-responsive"
+                        style="width:100%" alt="Image"> -->
+                    </div>
+                    <div class="panel-footer"><input type="file" id="upload-image-put" name="upload-image"
+                        class="btn btn-info" accept="image/*" value="Izaberi Sliku" style="width:100%">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label for="perfume-name">Name:</label>
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="text" name="perfume-name" id="perfume-name-put" placeholder="Ime Parfema...">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-2">
+                    <abbr>Pol:</abbr>
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="male3">Muški</label>
+                    <input type="radio" name="gender3" id="male3" value="M">
+                    &nbsp &nbsp
+                    <label for="female3">Ženski</label>
+                    <input type="radio" name="gender3" id="female3" value="F">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-2"><abbr>Brend:</abbr></div>
+                  <div class="col-sm-6">
+                    <select name="brend_odabir" title="brend_odabir" id="brend_odabir3">
+                      <?php
+                      getBrendovi();
+                      ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-2"><abbr>Tester:</abbr></div>
+                  <div class="col-sm-6">
+                    <input type="radio" name="tester3" id="yes3" value="yes">
+                    <label for="yes3">Da</label>
+                    &nbsp &nbsp
+                    <input type="radio" name="tester3" id="no3" value="no">
+                    <label for="no3">Ne</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label for="perfume-price">Cena:</label>
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="text" name="perfume-price" id="perfume-price-put" placeholder="U evrima...">
+                  </div>
+                </div>
+                <div class="row" id="parfem-put">
+                  <input type="submit" name="parfem-put" id="parfem-put" class="btn btn-info" value="Sačuvaj parfem"
+                    style="margin-left: 10px">
+                </div>
+              </div>
+              <div class="col-sm-1"></div>
+          </form>
+        </div>
+      </div>
 
+    </div>
+  </div>
+  </div>
+  <div id="perfume-delete" class="container">
+    <div id="perfume-delete-content" class="container"></div>
+    <div id="modal-delete" class="container">
+    </div>
+  </div>
 
-  <!-- </form> -->
   <br>
   <br>
   <footer class="container-fluid text-center">
@@ -272,5 +381,6 @@ include 'obrada.php';
     </form>
   </footer>
   <script src="js/mojskript.js" type="text/javascript"></script>
-</body>   
+</body>
+
 </html>
