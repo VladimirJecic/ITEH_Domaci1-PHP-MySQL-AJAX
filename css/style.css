@@ -57,7 +57,22 @@
   .col-sm-1 button {
       margin-top: 1vh;
   }
-
+  ul.dropdown-menu p{
+    margin-bottom: 0px;
+  }
+  ul.dropdown-menu hr{
+    margin-top: 1px;
+    margin-bottom: 10px;
+  }
+  ul.dropdown-menu{
+    width: 12vw;
+    padding: 5px 5px 5px 20px;
+  }
+  ul.dropdown-menu div:not(.column){
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
   #dropdownMenuLink {
       margin-top: 5px;
   }
@@ -162,13 +177,13 @@
       flex-direction: column;
   }
 
-  .col-sm-5#input {
+  div.col-sm-5#search-input {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
   }
 
-  .col-sm-5#input>* {
+  div.col-sm-5#search-input>* {
       margin-bottom: 1.5vh;
   }
 
@@ -183,20 +198,14 @@
       font-size: 40px;
   }
 
-  /* .col-sm-3 p{
-   margin-bottom: 0;
-} */
-  /* #logo-small .img-responsive{
-    max-height: 85px;
-} */
   div#submit.col-sm-1,
   .col-sm-5 .col-sm-6 {
       padding-left: 0px;
   }
 
   html body div#perfume-get.container>div.col-sm-4,
-  html body div#perfume-put.container>div.col-sm-4,
-  html body div#perfume-delete.container>div.col-sm-4 {
+  html body div#perfume-put-content.container>div.col-sm-4,
+  html body div#perfume-delete-content.container>div.col-sm-4 {
       margin: 5px 0px 10px 0px;
   }
 
@@ -224,7 +233,7 @@
 
   }
 
-  div#parfem-post.row {
+  div#parfem-post.row,div#parfem-put.row {
       margin-left: 10px;
   }
 
@@ -242,7 +251,7 @@
       font-size: 22px;
   }
 
-  div.col-sm-4 div.card p button {
+  div.col-sm-4 div.card input[type=submit] {
       border: none;
       outline: 0;
       padding: 12px;
@@ -255,7 +264,7 @@
 
   }
 
-  div.col-sm-4 div.card p button:hover {
+  div.col-sm-4 div.card input[type=submit]:hover {
       background-color: #2938bd;
       opacity: 0.7;
   }
@@ -306,7 +315,7 @@
           height: 80%;
       }
 
-      .col-sm-5#input {
+      .col-sm-5#search-input {
           align-items: center;
       }
 
@@ -337,7 +346,10 @@
       }
 
       @media only screen and (max-width: 770px) {
-
+        .navbar-nav .open .dropdown-menu {
+            width: unset;
+            margin-left: 10px;
+        }
           #perfume-get,
           #perfume-put,
           #perfume-delete,
@@ -355,7 +367,7 @@
       }
 
       @media only screen and (max-width: 651px) {
-          div#perfume-post.container+div.col-sm-5 {
+          div#perfume-post.container {
               display: flex;
               align-items: center;
               justify-content: center;

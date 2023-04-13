@@ -13,7 +13,24 @@
 
     <link rel="stylesheet" href="css/style.css">
     <style>
-        div.container-fluid.korpa {
+         div.container.korpa>table.table.table-striped.table-responsive>tbody>tr>td.totalSinglePrice,
+         div.container.korpa>table.table.table-striped.table-responsive>tbody>tr>td.singlePrice{
+            text-align: center;
+            vertical-align: middle;
+            padding: unset;
+        }
+        td.quantity select{
+            background-color: unset;
+            width:100%;
+            text-align: center;
+            border:unset;
+            font: 2vh;
+            font-size: 1.8vh;
+            padding-top: 5px;
+            vertical-align: middle;
+            
+        }
+        div.container.korpa {
             min-height: 77.6vh;
         }
 
@@ -56,10 +73,18 @@
 </head>
 <?php
 
-//include 'obrada.php';
+if (!isset($_SESSION)) {
+    session_start();
+}
+// unset($_SESSION['cart']);
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = array();
+
+}
+// include 'obrada.php';
 ?>
 
-<body>
+<body onload="">
 
     <div id="header" class="container-fluid" style="background-color: #df73ff">
 
@@ -89,8 +114,9 @@
         </div>
 
     </div>
-    <div class="container-fluid korpa">
-        <h4>Korpa sadrži: proizvoda</h4>
+    <div class="container korpa" style="width: 90vw">
+        <h4>Korpa sadrži:<span><?php countKorpa();?></span> proizvoda
+        </h4>
         <div class="korpa-div">
         </div>
 
@@ -110,7 +136,7 @@
                         <td colspan="2">
                         </td>
                         <td style="text-align: end"> Ukupno:</td>
-                        <td style="text-align: center"> 90.00 Euro</td>
+                        <td id="totalPrice" style="text-align: center"> 0.00 Euro</td>
                         <td><button type="button" class="btn btn-secondary"><input type="submit" name="submit"
                                     value="Isprazni Korpu" style="border: none; padding: unset;"></button></td>
 
@@ -122,44 +148,34 @@
                         </td>
                         <td><a type="button" href="?" id="zavrsi-kupovinu" class="btn btn-success">Završi Kupovinu <span
                                     class="glyphicon glyphicon-arrow-right"></span></a></td>
+                    </tr>
                 </form>
-                </tr>
-                <tr>
+                    
 
-                </tr>
+                
             </tfoot>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Uros</td>
-                    <td>Savov</td>
-                    <td>savovuros@mail.com</td>
-                    <td><button type="button" class="btn btn-izbaci">Izbaci</button></td>
+                <?php
+                $L = count($_SESSION['cart']);
+                 for($i=0;$i<$L;$i++):?>
+                <tr id="row_<?php echo $_SESSION['cart'][$i]->id?>">
+                    <td class="name"><?php echo $_SESSION['cart'][$i]->name?></td>
+                    <td class="singlePrice"><?php echo number_format($_SESSION['cart'][$i]->price,2,'.',' ')?></td>
+                    <td class="quantity">
+                    <select id="sel_<?php echo $_SESSION['cart'][$i]->id?>" name="quantity_odabir" onchange="updateQuantity(this); window.location.reload();">
+                    <?php
+                    $quantities = range(1, 20);
+                    foreach ($quantities as $q): ?>
+                        <option value= "<?php  echo $q ?>" 
+                        <?php if($q==$_SESSION['cart'][$i]->quantity):?> selected <?php endif;?>
+                        ><?php  echo $q?> </option>
+                    <?php endforeach; ?>
+                    </select>             
+                    </td>
+                    <td class="totalSinglePrice"> <?php echo number_format($_SESSION['cart'][$i]->quantity * $_SESSION['cart'][$i]->price,2,'.','') ?></td>
+                    <td class="remove"><button type="button" class="btn btn-izbaci">Izbaci</button></td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Anastasija</td>
-                    <td>Panic</td>
-                    <td>panica@mail.com</td>
-                    <td><button type="button" class="btn btn-izbaci">Izbaci</button></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Marija</td>
-                    <td>Pesic</td>
-                    <td>pesicmara@mail.com</td>
-                    <td><button type="button" class="btn btn-izbaci">Izbaci</button></td>
-                </tr>
-                <!-- <container id="quantity">
-        <abbr>Količina:</abbr>
-        <select name="quantity_odabir" title="quantity_odabir" id="quantity_odabir">
-          < ? php
-          $quantities = range(1, 10);
-          foreach ($quantities as $q): ?>
-            <option value= "< ? php  echo $q ?>"> < ?php echo $q ?> </option>
-          < ? php endforeach; ?>
-        </select>
-      </container> -->
+            <?php endfor;?>
             </tbody>
         </table>
     </div>
@@ -168,10 +184,61 @@
     <footer class="container-fluid text-center">
         <p>@2023 Heliotrope, Sva prava zadržana</p>
         <form class="form-inline">Prijava za newsletter:
-            <input type="email" class="form-control" size="50" placeholder="Email Addresa">
+            <input type="email" class="form-control" size="50" placeholder="Email Adresa">
             <button type="button" class="btn btn-danger">Prijavi se</button>
         </form>
     </footer>
 </body>
 
 </html>
+<script>
+
+ function calculateTotal(){
+    let sum = 0;
+    debugger;
+    for (let index = 0; index < $(".totalSinglePrice").length; index++) {
+        sum+=parseFloat($(".totalSinglePrice").eq(index).html());
+    }
+    document.getElementById('totalPrice').innerText = `${sum.toFixed(2)} Euro`;
+ }
+ function updateQuantity(selector){
+     let p_id = selector.id.split('_');
+     p_id = p_id[1];
+     let p_quantity = selector.value;
+     let data = {"id": p_id, "quantity": p_quantity};
+    $.ajax({
+
+          // contentType: 'application/json', ovo je pogresno zato sto ne saljem json u ovom slucaju
+          //vec zelim da posaljem multi-part data koji cu uzeti kasnije iz $_POST varijable, u suprotnom $_POST
+          // je prazna i moram da koristim php://input' da bih izvukao input 
+          contentType: 'application/json',
+          url: 'http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/update-korpa-quantity',
+          type: 'PUT',
+          async: false,
+          data: JSON.stringify(data),
+          dataType: 'JSON',
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            console.log(data['message']);
+        //u slucaju da ne zelim da reloadujem i input polja
+        // jquery iteracija bi isla ovako:
+        // $("#row_"+data['id']).children().each(function(i,el){var elem = $(el[0]); console.log(elem.className);});
+        // js iteracija po DOM elementima i updejtovanje ukupne cene tog proizvoda
+        // $.each(document.getElementById("row_"+data['id']).children, function( index, element ){
+        //     if(element.getAttribute("class")=='totalSinglePrice'){ element.innerText = (data['singlePrice']*data['newQuantity']).toFixed(2) ; console.log(element)};
+        //  });
+         //updejtovanje polja konacne cene
+        //  document.getElementById("totalPrice").innerText = (parseInt(document.getElementById("totalPrice").innerText)+ (data['newQuantity']-data['oldQuantity'])*data['singlePrice']).toFixed(2);
+        //calculateTotal();
+        //ponovno brojanje proizvoda,mora preko js ili ajaxa jer je stranica vec ucitana
+          },
+          error: function (e) {
+            alert("greška prilikom azuriranja broja proizvoda u korpi:" + e);
+            
+          }
+        });
+ }
+ calculateTotal();
+</script>
