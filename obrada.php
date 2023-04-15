@@ -24,7 +24,12 @@ function countKorpa(): void{
     }
     echo ($sum);
 }
-//POST Dodaj u Korpu
+// GET ?vidi_korpu(ucitava stranicu korpa.php)
+if (isset($_GET['vidi_korpu'])) {
+    include 'korpa.php';
+    exit();
+}
+//POST Dodaj u Korpu(povecava kolicinu izabranog proizvoda za 1)
 if (isset($_POST['submit']) && $_POST['submit'] == "Dodaj u korpu") {
     
     // header("Location: https://www.edureka.co/");
@@ -50,8 +55,8 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Dodaj u korpu") {
     }
     exit();
 }
-//POST Ukloni iz Korpe
-if(isset($_POST['submit']) && $_POST['submit'] == "Ukloni iz Korpe"){
+//POST Ukloni iz Korpe(smanjuje kolicinu izbaranog proizvoda za 1)
+if(isset($_POST['submit']) && $_POST['submit'] == "Oduzmi iz Korpe"){
     $L = count($_SESSION['cart']);
     for ($i = 0; $i < $L; $i++) {
         if ($_SESSION['cart'][$i]->id == $_POST['id']) {
@@ -63,12 +68,28 @@ if(isset($_POST['submit']) && $_POST['submit'] == "Ukloni iz Korpe"){
             break;
         }
     }
-    header('Location: ./store.php');
+    header('Location: ./'. (isset($_POST['self']) ? $_POST['self'] :'store.php'));
+    exit();
+}
+//POST Isprazni Korpu
+if (isset($_POST['submit']) && $_POST['submit'] == 'Isprazni Korpu') {
+    unset($_SESSION['cart']);
+    header('Location: ?vidi_korpu');
+    exit();
+}
+//POST Izbaci(izbacuje izabrani proizvod iz korpe)
+if (isset($_POST['submit']) && $_POST['submit'] == 'Izbaci') {
+    $L = count($_SESSION['cart']);
+    for ($i = 0; $i < $L; $i++) {
+        if ($_SESSION['cart'][$i]->id == $_POST['id']) {
+                unset($_SESSION['cart'][$i]);
+                $_SESSION['cart'] = array_values($_SESSION['cart']);//'reindex' array
+                break;
+            }
+        }
+    
+    header('Location: ?vidi_korpu');
     exit();
 }
 
-if (isset($_GET['vidi_korpu'])) {
-    include 'korpa.php';
-    exit();
-}
 ?>

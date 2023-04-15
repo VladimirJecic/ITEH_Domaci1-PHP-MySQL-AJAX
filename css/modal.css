@@ -92,6 +92,14 @@
     text-decoration: none;
     cursor: pointer;
   }
+  input[name="parfem-delete"]{
+    font-size: 2.3vh;
+  }
+  #parfem-delete div.col-sm-3{
+    display: flex;
+    justify-content: center;
+  }
+
   
   @keyframes modalopen {
     from {
@@ -101,4 +109,10 @@
       opacity: 1;
     }
   }
+  @media only screen and (max-width: 510px) {
+    input[name="parfem-delete"]{
+      font-size: 1.8vh;
+    }
+
+}
   
