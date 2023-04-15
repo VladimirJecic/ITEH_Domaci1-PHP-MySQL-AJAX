@@ -30,7 +30,7 @@ Flight::route('GET /parfemi/\?where=@where?&order=@order?', function ($where, $o
         $response['arrPerfume'] = $arrPerfume;
         $_SESSION['arrPerfume'] = $arrPerfume;
         $response['success'] = 'yes';
-        $responsep['query'] = "\nUpit:" . $db->getLastQuery();
+        $response['query'] = "\nUpit:" . $db->getLastQuery();
         $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
         echo $json_response;
         return false;
@@ -38,6 +38,15 @@ Flight::route('GET /parfemi/\?where=@where?&order=@order?', function ($where, $o
         //da li se ovo treba prikazati korisniku ili logavati negde,
         //logovati koristeci flightov logger?
         $response['message'] = $db->getLastQuery() . 'Došlo je do greške prilikom učitavanja parfema: ' . $e->getMessage();
+        $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
+        echo $json_response;
+        return false;
+    }
+});
+Flight::route('GET /parfemi/session', function () {
+    header("Content-Type: application/json; charset=utf-8");
+    if(isset($_SESSION['arrPerfume'])){
+        $response['arrPerfume'] =$_SESSION['arrPerfume'];
         $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
         echo $json_response;
         return false;
@@ -55,7 +64,6 @@ Flight::route('POST /parfemi',function () {
             echo $json_response;
             return false;
         } else {
-            // $targetFilePath = "uploads/".$_FILES["image"]["name"];
             $image = addslashes($_FILES['image']['tmp_name']);
             $image = file_get_contents($image);
             $image = base64_encode($image);
@@ -101,7 +109,7 @@ Flight::route('POST /parfemi',function () {
                         $data_query[$k] = $v;
                     }
 
-                    if ($db->insert(table: 'image', column_names: array('image', 'image_name'), column_values: array($data_query['image'], $data_query['name']))) {
+                    if ($db->insert(table: 'image', column_names: array('image', 'image_name'), column_values: array($data_query['image'], $data_query['image_name']))) {
                         $message .= "\nSlika je sacuvana sa id-em:" . $db->last_id;
                     } else {
                         $message .= "\nDoslo je do greske i slika nije sacuvana.\n";
@@ -110,8 +118,9 @@ Flight::route('POST /parfemi',function () {
                     if ($db->insert(table: "perfume", column_values: array($data_query["name"], $data_query["gender"], $data_query["brand_id"], $data_query["tester"], $data_query["price"], $data_query["image_id"]))) {
                         $response["success"] = "yes";
                         $message .= "\nParfem je sačuvan\n";
+                        //izmena u $_SESSION varijabli
+                        $_SESSION['arrPerfume'][] =  (object)array("id"=> $db->last_id, "name"=>  $data->name, "gender"=>  $data->gender, "tester"=> $data->tester, "quantity"=>  0, "price"=> $data->price, "brand_id"=> $data->brand_id , "brand_name"=> $data->brand_name, "image_name"=> $data->image_name,"image"=> $data->image);
                         $db->commit();
-                        //ovde bi moglo da se uradi ubacivanje parfemu u $_SESSIOn varijablu kako bi se momentalno videla promena kod klijenta...ali me mrzi
                     } else {
                         $message .= "\nDošlo je do greške pri ubacivanju parfema\n";
                         $db->rollback();
@@ -142,8 +151,48 @@ Flight::route('POST /parfemi',function () {
         }
     }
 );
+
+Flight::route('PUT /parfemi/update-korpa-quantity', function () {
+    header("Content-Type: application/json; charset=utf-8");
+    $db = Flight::db();
+    $data_json = Flight::get("json_podaci");
+    try {
+        $data = json_decode($data_json);
+        if ($data == null) {
+            $response["message"] = "Niste prosledili podatke";
+            $json_response = json_encode($response);
+            echo $json_response;
+        } else {
+            if (!property_exists($data, 'id') || !property_exists($data, 'quantity')) {
+                $response["message"] = "Niste prosledili neko od polja ili je neko polje prazno";
+                $json_response = json_encode($response);
+                echo $json_response;
+            }else{
+                $L = count($_SESSION['cart']);
+                for($i = 0;$i<$L;$i++){
+                    if($_SESSION['cart'][$i]->id == $data->id){
+                        $_SESSION['cart'][$i]->quantity = $data->quantity;
+                        break;
+                    }
+                }
+                $response["message"] = "Broj selektovanog proizvoda je azuriran na ".$data->quantity;
+                $json_response = json_encode($response);
+                echo $json_response;
+            }
+        }
+    } catch (Exception $e) {
+        
+        $message = "Došlo je do greške na serveru:\n" . $e->getMessage();
+        $response["message"] = $message;
+        $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
+        echo $json_response;
+        return false;
+    }
+});
+
 Flight::route('PUT /parfemi/@id', function ($id) {
-        header("Content-Type: application/json; charset=utf-8");
+        // header("Content-Type: application/json; charset=utf-8");
+        
         $db = Flight::db();
         $message = '';
         $data_json = Flight::get("json_podaci");
@@ -203,8 +252,16 @@ Flight::route('PUT /parfemi/@id', function ($id) {
                     if ($db->update(table: "perfume", column_values: array($data_query["name"], $data_query["gender"], $data_query["brand_id"], $data_query["tester"], $data_query["price"], $data_query["image_id"]),where: "id=$id")) {
                         $response["success"] = "yes";
                         $message .= "\nParfem je ažuriran\n";
+                        //izmena u $_SESSION varijabli
+                        $L = count($_SESSION['arrPerfume']);
+                        for($i=0;$i<$L;$i++){
+                            if($_SESSION['arrPerfume'][$i]->id == $id){
+                                $_SESSION['arrPerfume'][$i] = (object)array("id"=> strval($id), "name"=>  $data->name, "gender"=>  $data->gender, "tester"=> $data->tester, "quantity"=> "0", "price"=> $data->price, "brand_id"=> $data->brand_id , "brand_name"=> $data->brand_name, "image_name"=> $data->image_name,"image"=> $data->image);
+                                break;
+                            }
+                        }
                         $db->commit();
-                        //ovde bi moglo da se uradi ubacivanje parfemu u $_SESSIOn varijablu kako bi se momentalno videla promena kod klijenta...ali me mrzi
+                        header("*Status: 204 No Content");
                     } else {
                         $message .= "\nDošlo je do greške pri ažuriranju parfema\n";
                         $message .= "\nUpit:" . $db->getLastQuery();
@@ -213,9 +270,9 @@ Flight::route('PUT /parfemi/@id', function ($id) {
                     $response["message"] = $message;
                     $response["query"] = "\nUpit:" . $db->getLastQuery();
                     
-                    $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
-                    echo $json_response;
-                    return false;
+                    // $json_response = json_encode($response, JSON_UNESCAPED_UNICODE); //jer PUT ne treba nista da vrati ako je uspeo?!
+                    // echo $json_response;
+                     return false;
 
                 } catch (Exception $e) {
                     $db->rollback();
@@ -238,48 +295,56 @@ Flight::route('PUT /parfemi/@id', function ($id) {
         }
     }
 );
-
-Flight::route('PUT /parfemi/update-korpa-quantity', function () {
-    header("Content-Type: application/json; charset=utf-8");
-    $db = Flight::db();
-    $data_json = Flight::get("json_podaci");
-    try {
-        $data = json_decode($data_json);
-        if ($data == null) {
-            $response["message"] = "Niste prosledili podatke";
-            $json_response = json_encode($response);
-            echo $json_response;
-        } else {
-            if (!property_exists($data, 'id') || !property_exists($data, 'quantity')) {
-                $response["message"] = "Niste prosledili neko od polja ili je neko polje prazno";
-                $json_response = json_encode($response);
-                echo $json_response;
-            }else{
-                $L = count($_SESSION['cart']);
-                for($i = 0;$i<$L;$i++){
-                    if($_SESSION['cart'][$i]->id == $data->id){
-                        $response["id"]= $data->id;
-                        $response["singlePrice"] = $_SESSION['cart'][$i]->price;
-                        $response["oldQuantity"]= $_SESSION['cart'][$i]->quantity;
-                        $response["newQuantity"] = $data->quantity;
-                        $_SESSION['cart'][$i]->quantity = $data->quantity;
+Flight::route('DELETE /parfemi/@id', function ($id) {
+        header("Content-Type: application/json; charset=utf-8");
+        $db = Flight::db();
+        $message = '';
+        try {
+            if ($db->delete(table: 'perfume', where: "id= $id")) {
+                $response["success"] = "yes";
+                $message .= "\nParfem je obrisan\n";
+                //izmena u $_SESSION varijabli
+                $L = count($_SESSION['arrPerfume']);
+                for($i=0;$i<$L;$i++){
+                    if($_SESSION['arrPerfume'][$i]->id == $id){
+                        unset($_SESSION['arrPerfume'][$i]);
+                        $_SESSION['arrPerfume'] = array_values($_SESSION['arrPerfume']);//'reindex' array
                         break;
                     }
                 }
-                $response["message"] = "Broj selektovanog proizvoda je azuriran na ".$data->quantity;
-                $json_response = json_encode($response);
+                $db->commit();
+            } else {
+                $message .= "\nDošlo je do greške pri brisanju parfema\n";
+                $message .= "\nUpit:" . $db->getLastQuery();
+                $db->rollback();
+            }
+            $response["message"] = $message;
+            $response["query"] = "\nUpit:" . $db->getLastQuery();
+            $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
+            echo $json_response;
+            return false;
+        } catch (Exception $e) {
+            $db->rollback();
+            //ovde je moguce proveriti uzrok i kasnije vratiti user-friendly odgovor  
+            $message .= "\nUpit:" . $db->getLastQuery();
+            $message .= "\nDošlo je do greške na serveru:\n" . $e->getMessage();
+            $response["message"] = $message;
+            $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
+            echo $json_response;
+            return false;
+        } finally {
+            if (!isset($response["message"])) {
+                $response["message"] = "Došlo je do nepredvidjene serverske greške pri izmeni parfema";
+                $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
                 echo $json_response;
+                return false;
             }
         }
-    } catch (Exception $e) {
-        
-        $message = "Došlo je do greške na serveru:\n" . $e->getMessage();
-        $response["message"] = $message;
-        $json_response = json_encode($response, JSON_UNESCAPED_UNICODE);
-        echo $json_response;
-        return false;
+    
     }
-});
+);
+
+
 
 Flight::start();
 ?>

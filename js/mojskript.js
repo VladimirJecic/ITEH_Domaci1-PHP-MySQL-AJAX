@@ -2,9 +2,11 @@
 const nizBlokova = ["error", "perfume-get", "perfume-post", "perfume-put", "perfume-delete", "success"];
 //get DOM Elements
 const modalPut = document.querySelector('#modal-put');
-// const closePut = document.querySelector('#modal-put .close');
+const modalDelete = document.querySelector('#modal-delete');
 const closePut = document.getElementsByClassName('close')[0];
+const closeDelete = document.getElementsByClassName('close')[1];
 const formDelete = document.getElementById('perfume-delete_form');
+var arrPerfume;
 ///////////////////////////<EventHandlers>////////////////////////////////////////////
 document.getElementById("zahtev_header").addEventListener("click", function (e) {
   if (e.target && e.target.matches("li>a")) {
@@ -18,7 +20,6 @@ $("input[name=upload-image]").change(function () {
   imagePreview(this);
 });
 document.querySelector('#perfume-post_form input[type="submit"]').addEventListener("click", function (e) {
-  debugger;
   e.preventDefault();
   posaljiZahtev("post");
   return false;
@@ -28,10 +29,35 @@ document.querySelector('#perfume-put_form input[type="submit"]').addEventListene
   posaljiZahtev("put");
   return false;
 });
+document.querySelector('#perfume-delete_form input[type="submit"]').addEventListener("click", function (e) {
+  e.preventDefault();
+  posaljiZahtev("delete");
+  return false;
+});
+$.each(document.querySelectorAll("ul.dropdown-menu button[type='submit']"), function (i, e) {
+  e.
+    addEventListener("click", function (el) {
+      el.target.parentNode.parentNode[0].value = "store.php" + window.location.hash;
+    });
+});
+$(document).ready(function(){
+  $(".perfume-get").click(function(){
+    fillPerfumeGet();
+  });
+  $(".perfume-put").click(function(){
+    fillPerfumePut();
+  });
+  $(".perfume-delete").click(function(){
+    fillPerfumeDelete();
+  });
+});
+
 closePut.addEventListener('click', function () {
   modalPut.style.display = 'none';
 });
-closePut.addEventListener('click', closeModal);
+closeDelete.addEventListener('click', function () {
+  modalDelete.style.display = 'none';
+});
 window.addEventListener('click', outsideClick);
 ////////////////////////////</EventHandlers>////////////////////////////////////////////
 
@@ -94,19 +120,19 @@ function imagePreview(fileInput) {
 
 function validateForm(form) {
   var errMessage = '';
-  if ($(form+" input[name^=perfume-name]").val() == '') {
+  if ($(form + " input[name^=perfume-name]").val() == '') {
     errMessage += "Ime parfema ne sme biti prazno\n"
   }
-  if ($(form+" input[name^=gender]:checked").length == 0) {
+  if ($(form + " input[name^=gender]:checked").length == 0) {
     errMessage += "Pol mora biti čekiran\n";
   }
-  if ($(form+" input[name^=tester]:checked").length == 0) {
+  if ($(form + " input[name^=tester]:checked").length == 0) {
     errMessage += "Tester mora biti čekiran\n";
   }
-  if (!/^((0|[1-9][0-9]*)\.[0-9]*|(0|[1-9][0-9]*))$/.test($(form+" input[name^=perfume-price]").val())) {
+  if (!/^((0|[1-9][0-9]*)\.[0-9]*|(0|[1-9][0-9]*))$/.test($(form + " input[name^=perfume-price]").val())) {
     errMessage += "Cena mora biti broj\n";
   }
-  if (form=="perfume-post-form" && $(form+" input[name^=upload-image]").val() == '') {
+  if (form == "perfume-post-form" && $(form + " input[name^=upload-image]").val() == '') {
     errMessage += "Slika mora biti selektovana\n";
   }
   if (errMessage != '') {
@@ -153,6 +179,9 @@ function getFilters() {
 //funkcija posaljiZahtev obrađuje pomoću AJAX - a zahteve koje šaljemo ka serveru
 function posaljiZahtev(tipZahteva) {
   let form;
+  let selectBrand;
+  let id;
+  let selectBrandName;
   try {
     switch (tipZahteva) {
       case "get":
@@ -169,7 +198,6 @@ function posaljiZahtev(tipZahteva) {
           success: function (data) {
             if ('message' in data) {
               if ('success' in data) {
-                // console.log(data['query']); 
                 console.log(data['message']);
               } else {
                 console.error(data['message']);
@@ -177,32 +205,17 @@ function posaljiZahtev(tipZahteva) {
             }
             if ('arrPerfume' in data) {
               arrPerfume = data['arrPerfume'];
-              var getType = document.getElementsByClassName("active")[0].childNodes[0].className;
-              switch (getType) {
-                case "perfume-get":
-                  fillPerfumeGet(arrPerfume);
-                  scrollProductIntoView();
-                  break;
-                case "perfume-put":
-                  fillPerfumePut(arrPerfume);
-                  scrollProductIntoView();
-                  break;
-                case "perfume-delete":
-                  fillPerfumeDelete(arrPerfume);
-                  scrollProductIntoView();
-                  break;
-                default:
-                  console.log("Nepredvidjen aktivni blok" + getType);
-              }
+              fillPerfumeGet();
+              fillPerfumePut();
+              fillPerfumeDelete();
+              scrollProductIntoView();
+            } else if (arrPerfume.length == 0) {
+              var div_empty_response = document.createElement('div');
+              div_empty_response.classList.add('alert');
+              div_empty_response.classList.add('alert-warning');
+              div_empty_response.innerHTML = "<h4><strong>!</strong> Nije nadjen nijedan parfem za unete podatke pretrage.</h4></div>";
+              document.getElementById("perfume-get").appendChild(div_empty_response);
 
-              if (arrPerfume.length == 0) {
-                var div_empty_response = document.createElement('div');
-                div_empty_response.classList.add('alert');
-                div_empty_response.classList.add('alert-warning');
-                div_empty_response.innerHTML = "<h4><strong>!</strong> Nije nadjen nijedan parfem za unete podatke pretrage.</h4></div>";
-                document.getElementById("perfume-get").appendChild(div_empty_response);
-
-              }
             } else {
               console.error("vracena je neinicijalizovana data['arrPerfume']");
             }
@@ -213,12 +226,15 @@ function posaljiZahtev(tipZahteva) {
         form = "#perfume-post_form";//id
         validateForm(form);
         var formData = new FormData();
-        formData.append('name', $( form+" input[name^=perfume-name]").val());
-        formData.append('gender', $(form+" input[name^=gender]:checked")[0].value);
-        formData.append('brand_id',$(form+" select[name^=brend_odabir]")[0].options.selectedIndex);
-        formData.append('tester', $(form+" input[name^=tester]:checked")[0].value);
-        formData.append('price', parseFloat($(form+" input[name^=perfume-price]").val()));
-        formData.append('image', $(form+" input[name^=upload-image]").prop('files')[0]);
+        selectBrand = $(form + " select[name^=brend_odabir]")[0];
+        $.each(selectBrand.children, function(i,e){if(e.value==selectBrand.value){ selectBrandName = e.innerText; return;}});
+        formData.append('name', $(form + " input[name^=perfume-name]").val());
+        formData.append('gender', $(form + " input[name^=gender]:checked")[0].value);
+        formData.append('brand_id', selectBrand.value);
+        formData.append('brand_name', selectBrandName);
+        formData.append('tester', $(form + " input[name^=tester]:checked")[0].value);
+        formData.append('price', parseFloat($(form + " input[name^=perfume-price]").val()));
+        formData.append('image', $(form + " input[name^=upload-image]").prop('files')[0]);
         $.ajax({
           // contentType: 'application/json', ovo je pogresno zato sto ne saljem json u ovom slucaju
           //vec zelim da posaljem multi-part data koji cu uzeti kasnije iz $_POST varijable, u suprotnom $_POST
@@ -238,6 +254,9 @@ function posaljiZahtev(tipZahteva) {
             if ('success' in data) {
               document.getElementById(nizBlokova[5]).style.display = "block";
               document.getElementById(nizBlokova[5]).innerHTML = data['message'].trim();
+              $.getJSON("http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/session", function( data ) {
+                arrPerfume = data['arrPerfume'];
+              });
             } else {
               document.getElementById(nizBlokova[0]).style.display = "block";
               document.getElementById(nizBlokova[0]).innerHTML = data['message'];
@@ -254,25 +273,22 @@ function posaljiZahtev(tipZahteva) {
         form = "#modal-put";//id
         validateForm(form);
         var formData = new FormData();
-        let st = $(form+" img").attr("src");
-        let image = st.substring(st.indexOf(',')+1);
-        data={
-          "name" : $( form+" input[name^=perfume-name]").val(),
-          "gender": $(form+" input[name^=gender]:checked")[0].value,
-          "brand_id": $(form+" select[name^=brend_odabir]")[0].options.selectedIndex,
-          "tester": $(form+" input[name^=tester]:checked")[0].value,
-          "price": parseFloat($(form+" input[name^=perfume-price]").val()),
-          "image":  image,
+        let src = $(form + " img").attr("src");
+        let image = src.substring(src.indexOf(',') + 1);
+        selectBrand = $(form + " select[name^=brend_odabir]")[0];
+        $.each(selectBrand.children, function(i,e){if(e.value==selectBrand.value){ selectBrandName = e.innerText; return;}});
+        data = {
+          "name": $(form + " input[name^=perfume-name]").val(),
+          "gender": $(form + " input[name^=gender]:checked")[0].value,
+          "brand_id": selectBrand.value,
+          "brand_name": selectBrandName,
+          "tester": $(form + " input[name^=tester]:checked")[0].value,
+          "price": parseFloat($(form + " input[name^=perfume-price]").val()),
+          "image": image,
           "image_name": $("#modal-put img").attr("alt")//proveriti sta vraca kada se uploaduje novi fajl
         }
-        // formData.append('name', $( form+" input[name^=perfume-name]").val()); 
-        // formData.append('brand_id',$(form+" select[name^=brend_odabir]")[0].options.selectedIndex);
-        // formData.append('tester', $(form+" input[name^=tester]:checked")[0].value);
-        // formData.append('price', parseFloat($(form+" input[name^=perfume-price]").val()));
-        // formData.append('image', dataURLtoFile($("#modal-put img").attr("src"),$("#modal-put img").attr("name")));
-        
-        let id = $( form+" input[name^=id]").val();
-        let json_data=JSON.stringify(data);
+        id = $(form + " input[name^=id]").val();
+        let json_data = JSON.stringify(data);
         $.ajax({
           // contentType: 'application/json', ovo je pogresno zato sto ne saljem json u ovom slucaju
           //vec zelim da posaljem multi-part data koji cu uzeti kasnije iz $_POST varijable, u suprotnom $_POST
@@ -281,19 +297,53 @@ function posaljiZahtev(tipZahteva) {
           method: 'PUT',
           async: false,
           data: json_data,
+          // dataType: 'JSON',
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+
+            modalPut.style.display = "none";
+            if(data== ''){//Sve je okej jer uspesan PUT ne treba nista da vrati
+              $.getJSON("http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/session", function( data ) {
+                arrPerfume = data['arrPerfume'];
+                fillPerfumePut();
+              });
+            }else{
+              console.log(data['query']);
+              document.getElementById(nizBlokova[5]).style.display = "block";
+              document.getElementById(nizBlokova[5]).innerHTML = data['message'].trim();
+          }
+          },
+          error: function (e) {
+            alert("greška prilikom izmene parfema:" + e);
+          }
+        });
+        break;
+      case 'delete':
+        id = $("#modal-delete input[name^=id]").val();
+        $.ajax({
+          // contentType: 'application/json', ovo je pogresno zato sto ne saljem json u ovom slucaju
+          //vec zelim da posaljem multi-part data koji cu uzeti kasnije iz $_POST varijable, u suprotnom $_POST
+          // je prazna i moram da koristim php://input' da bih izvukao input ,
+          url: `http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/${id}`,
+          method: 'DELETE',
+          async: false,
           dataType: 'JSON',
           cache: false,
           contentType: false,
           processData: false,
           success: function (data) {
+            modalDelete.style.display = "none";
             document.getElementById(nizBlokova[0]).style.display = "none";
             document.getElementById(nizBlokova[5]).style.display = "none";
             if ('success' in data) {
-              alert("Success!")
-              console.log(data['query']);
               document.getElementById(nizBlokova[5]).style.display = "block";
               document.getElementById(nizBlokova[5]).innerHTML = data['message'].trim();
-              modalPut.querySelector('')
+              $.getJSON("http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/session", function( data ) {
+                arrPerfume = data['arrPerfume'];
+                fillPerfumeDelete();
+              });
             } else {
               document.getElementById(nizBlokova[0]).style.display = "block";
               document.getElementById(nizBlokova[0]).innerHTML = data['message'];
@@ -301,11 +351,11 @@ function posaljiZahtev(tipZahteva) {
           },
           error: function (e) {
             alert("greška prilikom izmene parfema:" + e);
-            // debugger;
           }
         });
         break;
-        default:
+      
+      default:
         console.log("default");
     }
   } catch (err) {
@@ -314,8 +364,7 @@ function posaljiZahtev(tipZahteva) {
     document.getElementById(nizBlokova[0]).style.display = "block";
   }
 }
-function fillPerfumeGet(arrPerfume) {
-  console.log("GET");
+function fillPerfumeGet() {
   document.getElementById("perfume-get").innerHTML = "";
   var i = 1;
   arrPerfume.forEach(el => {
@@ -337,7 +386,7 @@ function fillPerfumeGet(arrPerfume) {
     i++;
   });
 }
-function fillPerfumePut(arrPerfume) {
+function fillPerfumePut() {
   document.getElementById("perfume-put-content").innerHTML = "";
   var i = 1;
   arrPerfume.forEach(el => {
@@ -362,7 +411,7 @@ function fillPerfumePut(arrPerfume) {
     i++
   });
 }
-function fillPerfumeDelete(arrPerfume) {
+function fillPerfumeDelete() {
   document.getElementById("perfume-delete-content").innerHTML = "";
   var i = 1;
   arrPerfume.forEach(el => {
@@ -370,17 +419,18 @@ function fillPerfumeDelete(arrPerfume) {
     div_col.classList.add('col-sm-4');
     div_col.innerHTML = `
         <div class="card">
+        <form id="perfume-delete_form" action="" method="post" onsubmit="return openModal(event,modalDelete);">
           <img src="data:image/png;base64,${el["image"]}" class="img-responsive" alt="${el["image_name"]}">
           <h1><small>${el["brand_name"]}</small></h1>
           <h3><i>${el["name"]}</i></h3>
           <p class="price"><b>${parseFloat(el["price"]).toFixed(2)}  &#8364</b></p>
-          <form action="" method="post">
           <input type="hidden" name="id" value=${el["id"]}>
           <input type="submit" name="submit" value="Obriši Proizvod"></input>
           </form>
         </div>
         `;
     document.getElementById("perfume-delete-content").appendChild(div_col);
+    i++;
   });
 }
 function scrollProductIntoView() {
@@ -395,22 +445,23 @@ function openModal(e, modal) {
       setupPutModal(e.target);
       modal.style.display = 'block';
       break;
+    case 'modal-delete':
+      setupDeleteModal(e.target);
+      modal.style.display = 'block';
+      break;
     default:
       console.log("openModal->nepostojeci modal->" + modal.id);
   }
   return false;
-}
-function closeModal() {
-  modalPut.style.display = 'none';
 }
 // Close Modal If Outside Clicked
 function outsideClick(e) {
   if (e.target == modalPut) {
     modalPut.style.display = 'none';
   }
-  // if (e.target == modalDelete) {
-  //   modalDelete.style.display = 'none';
-  // }
+  if (e.target == modalDelete) {
+    modalDelete.style.display = 'none';
+  }
 }
 function setupPutModal(form) {
 
@@ -428,7 +479,7 @@ function setupPutModal(form) {
         modalPut.querySelectorAll("input[name='gender3']")[element.value == 'M' ? 0 : 1].checked = true;
         break;
       case 'brand_id':
-        modalPut.querySelector('select[name = brend_odabir]').options.selectedIndex = element.value;
+        modalPut.querySelector('select[name = brend_odabir]').value = element.value;
         break;
       case 'tester':
         modalPut.querySelectorAll("input[name='tester3']")[element.value == 'yes' ? 0 : 1].checked = true;
@@ -443,18 +494,30 @@ function setupPutModal(form) {
   });
 
 };
+function setupDeleteModal(form) {
+  $.each(form.children, function (index, element) {
+    switch (element.getAttribute("name")) {
+      case 'id':
+        modalDelete.querySelector('input[name=id]').value = element.value;
+        break;
+    }
+
+  });
+
+};
 function dataURLtoFile(dataurl, filename) {
   var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-      while(n--){
-          u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], filename, {type:mime});
+    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
   }
+  return new File([u8arr], filename, { type: mime });
+}
 
 //////////<POZIVI_FUNKCIJA>///////////////////
 postaviAktivniNavbar();
 posaljiZahtev("get");
+
 prikaziBlok();
 
 

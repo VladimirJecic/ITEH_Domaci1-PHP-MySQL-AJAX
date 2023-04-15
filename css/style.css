@@ -154,7 +154,7 @@
       align-items: flex-start;
   }
 
-  .col-sm-2#social {
+  div.col-sm-2.social {
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
@@ -280,6 +280,7 @@
       height: 55px;
   }
 
+
   @media only screen and (max-width: 990px) {
       div.card h3 {
           height: 79px;
@@ -391,7 +392,7 @@
           height: 80%;
       }
 
-      .col-sm-2 {
+      .col-sm-2:not(.row.search .col-sm-2){
           width: 30vw;
 
       }
@@ -399,9 +400,12 @@
       .col-sm-2 .img-responsive#logo-small {
           min-height: 20vh;
           max-height: 30vh;
+          /* min-width: 270px;
+          min-height: 405px; */
       }
 
-      .col-sm-2#social {
+
+      div.col-sm-2#social {
           display: none;
       }
 

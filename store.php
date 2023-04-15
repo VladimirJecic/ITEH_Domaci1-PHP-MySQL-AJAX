@@ -4,6 +4,7 @@
 if (!isset($_SESSION)) {
   session_start();
 }
+// unset($_SESSION['arrPerfume']);
 // unset($_SESSION['cart']);
 if (!isset($_SESSION['cart'])) {
   $_SESSION['cart'] = array();
@@ -62,7 +63,7 @@ include 'obrada.php';
 
   </div>
 
-  <div class="row" style="background-color: #e6a3fa">
+  <div class="row search" style="background-color: #e6a3fa">
     <div class="col-sm-2"><img id="logo-small" class="img-responsive" src="img/logo1.png" alt="logo.png"></div>
     <div id="search-input" class="col-sm-5">
       <input type="text" name="search-name" id="search-name" placeholder="Pretraga po imenu">
@@ -130,12 +131,8 @@ include 'obrada.php';
         <ul class="nav navbar-nav" name="zahtev_header" id="zahtev_header">
           <li class="active"><a class="perfume-get" href="#perfume-get">Parfemi</a></li>
           <li><a class="perfume-post" href="#perfume-post">Unos Novog Parfema</a></li>
-          <li><a class="perfume-put" href="#perfume-put"
-              onclick="<?php if (isset($_SESSION['arrPerfume'])): ?>fillPerfumePut(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume'])); ?>);<?php endif; ?>">Izmena
-              Parfema</a></li>
-          <li><a class="perfume-delete" href="#perfume-delete"
-              onclick="<?php if (isset($_SESSION['arrPerfume'])): ?>fillPerfumeDelete(<?php echo htmlspecialchars(json_encode($_SESSION['arrPerfume'])); ?>);<?php endif; ?>">Brisanje
-              Parfema</a></li>
+          <li><a class="perfume-put" href="#perfume-put" >Izmena Parfema</a></li>
+          <li><a class="perfume-delete" href="#perfume-delete" >Brisanje Parfema</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
@@ -167,8 +164,9 @@ include 'obrada.php';
                       <p>
                       <p style=" float:right; margin-left:auto; ">
                       <form action="" method="post">
+                        <input type="hidden" name="self" value="">
                         <input type="hidden" name="id" value=<?php echo $_SESSION['cart'][$i]->id ?>>
-                        <button type="submit" name="submit" value="Ukloni iz Korpe"><span style="font-size: 14px;"
+                        <button type="submit" name="submit" value="Oduzmi iz Korpe"><span style="font-size: 14px;"
                             class="glyphicon glyphicon-remove"></span></button>
                       </form>
                       </p>
@@ -367,8 +365,52 @@ include 'obrada.php';
   </div>
   <div id="perfume-delete" class="container">
     <div id="perfume-delete-content" class="container"></div>
-    <div id="modal-delete" class="container">
+    <div id="modal-delete" class="container modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <div style=" display:flex; flex-direction: row;     
+                align-items:center;">
+            <span class="glyphicon glyphicon-question-sign" style="font-size: 40px; margin-right: 10px;"></span>
+            <h4>Brisanje Proizvoda</h2>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form id="perfume-delete_form" method="delete" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="">
+            <div class="row">
+              <div class="col-sm-1"></div>
+              <div class="col-sm-10">
+                <div class="row">
+                <div class="col-sm-1"></div>
+                  <div class="col-sm-10">
+                    <p type="text" name="confirm-delete" id="confirm-delete"><h3 style="margin-top:10px; margin-bottom:20px; text-align: center;">
+                      Da li ste sigurni da želite da obrišete ovaj parfem?
+                  </h3><p>
+                  </div>
+                  <div class="col-sm-1"></div>
+                </div>
+                <div class="row" id="parfem-delete">
+                  <div class="col-sm-3"></div>
+                  <div class="col-sm-3">
+                  <input type="submit" name="parfem-delete" id="parfem-delete" class="btn btn-info" value="Da"
+                    style="">
+                  </div>
+                  <div class="col-sm-3">
+                  <input type="button" name="parfem-delete" id="parfem-delete" class="btn btn-info" value="Ne" onclick= "modalDelete.style.display = 'none'";
+                    style="">
+                  </div>
+                  <div class="col-sm-9"></div>
+
+                </div>
+              </div>
+              <div class="col-sm-1"></div>
+          </form>
+        </div>
+      </div>
+
     </div>
+  </div>
   </div>
 
   <br>
