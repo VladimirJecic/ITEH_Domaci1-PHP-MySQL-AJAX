@@ -32,7 +32,6 @@ if (isset($_GET['vidi_korpu'])) {
 //POST Dodaj u Korpu(povecava kolicinu izabranog proizvoda za 1)
 if (isset($_POST['submit']) && $_POST['submit'] == "Dodaj u korpu") {
     
-    // header("Location: https://www.edureka.co/");
     $found = -1;
     $L = count($_SESSION['arrPerfume']);
     for ($i = 0; $i < $L; $i++) {

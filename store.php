@@ -372,7 +372,7 @@ include 'obrada.php';
           <div style=" display:flex; flex-direction: row;     
                 align-items:center;">
             <span class="glyphicon glyphicon-question-sign" style="font-size: 40px; margin-right: 10px;"></span>
-            <h4>Brisanje Proizvoda</h2>
+            <h4>Brisanje Parfema</h2>
           </div>
         </div>
         <div class="modal-body">

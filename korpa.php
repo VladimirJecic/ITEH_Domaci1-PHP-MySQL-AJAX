@@ -233,9 +233,6 @@ if (!isset($_SESSION['cart'])) {
         let p_quantity = selector.value;
         let data = { "id": p_id, "quantity": p_quantity };
         $.ajax({
-            // contentType: 'application/json', ovo je pogresno zato sto ne saljem json u ovom slucaju
-            //vec zelim da posaljem multi-part data koji cu uzeti kasnije iz $_POST varijable, u suprotnom $_POST
-            // je prazna i moram da koristim php://input' da bih izvukao input 
             contentType: 'application/json',
             url: 'http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/update-korpa-quantity',
             type: 'PUT',
@@ -248,17 +245,6 @@ if (!isset($_SESSION['cart'])) {
             success: function (data) {
                 debugger;
                 console.log(data['message']);
-                //u slucaju da ne zelim da reloadujem i input polja
-                // jquery iteracija bi isla ovako:
-                // $("#row_"+data['id']).children().each(function(i,el){var elem = $(el[0]); console.log(elem.className);});
-                // js iteracija po DOM elementima i updejtovanje ukupne cene tog proizvoda
-                // $.each(document.getElementById("row_"+data['id']).children, function( index, element ){
-                //     if(element.getAttribute("class")=='totalSinglePrice'){ element.innerText = (data['singlePrice']*data['newQuantity']).toFixed(2) ; console.log(element)};
-                //  });
-                //updejtovanje polja konacne cene
-                //  document.getElementById("totalPrice").innerText = (parseInt(document.getElementById("totalPrice").innerText)+ (data['newQuantity']-data['oldQuantity'])*data['singlePrice']).toFixed(2);
-                //calculateTotal();
-                //ponovno brojanje proizvoda,mora preko js ili ajaxa jer je stranica vec ucitana
             },
             error: function (e) {
                 alert("greška prilikom azuriranja broja proizvoda u korpi:" + e);

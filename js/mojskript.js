@@ -34,6 +34,7 @@ document.querySelector('#perfume-delete_form input[type="submit"]').addEventList
   posaljiZahtev("delete");
   return false;
 });
+//spusti pogled do poslednje kliknutog proizvoda
 $.each(document.querySelectorAll("ul.dropdown-menu button[type='submit']"), function (i, e) {
   e.
     addEventListener("click", function (el) {
@@ -183,6 +184,8 @@ function posaljiZahtev(tipZahteva) {
   let id;
   let selectBrandName;
   try {
+    document.getElementById(nizBlokova[0]).style.display = "none";
+    document.getElementById(nizBlokova[5]).style.display = "none";
     switch (tipZahteva) {
       case "get":
         // SELECT * FROM perfume JOIN brand ON (perfume.brand_id=brand.id) JOIN image ON (perfume.image_id=image.id)
@@ -302,17 +305,20 @@ function posaljiZahtev(tipZahteva) {
           contentType: false,
           processData: false,
           success: function (data) {
-
             modalPut.style.display = "none";
+            document.getElementById(nizBlokova[0]).style.display = "none";
+            document.getElementById(nizBlokova[5]).style.display = "none";
             if(data== ''){//Sve je okej jer uspesan PUT ne treba nista da vrati
               $.getJSON("http://localhost:8080/iteh/domaci/ITEH_Domaci1-PHP-MySQL-AJAX/api/parfemi/session", function( data ) {
                 arrPerfume = data['arrPerfume'];
                 fillPerfumePut();
+                document.getElementById(nizBlokova[5]).style.display = "block";
+                document.getElementById(nizBlokova[5]).innerHTML="Parfem je uspešno izmenjen";
               });
             }else{
               console.log(data['query']);
-              document.getElementById(nizBlokova[5]).style.display = "block";
-              document.getElementById(nizBlokova[5]).innerHTML = data['message'].trim();
+              document.getElementById(nizBlokova[0]).style.display = "block";
+              document.getElementById(nizBlokova[0]).innerHTML = data['message'].trim();
           }
           },
           error: function (e) {

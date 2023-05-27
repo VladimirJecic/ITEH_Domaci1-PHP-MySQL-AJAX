@@ -5,8 +5,6 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-// $origin = 'http://localhost:8080';
-// header("Access-Control-Allow-Origin: " . $origin);
 Flight::register('db', 'Database', array('heliotrope'));
 $json_podaci = file_get_contents("php://input");
 Flight::set('json_podaci', $json_podaci);
@@ -154,7 +152,6 @@ Flight::route('POST /parfemi',function () {
 
 Flight::route('PUT /parfemi/update-korpa-quantity', function () {
     header("Content-Type: application/json; charset=utf-8");
-    $db = Flight::db();
     $data_json = Flight::get("json_podaci");
     try {
         $data = json_decode($data_json);
@@ -343,8 +340,5 @@ Flight::route('DELETE /parfemi/@id', function ($id) {
     
     }
 );
-
-
-
 Flight::start();
 ?>
